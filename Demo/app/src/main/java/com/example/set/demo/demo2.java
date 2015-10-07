@@ -20,16 +20,9 @@ public class demo2 extends AppCompatActivity {
         textView.setTextSize(40);
         textView.setText(message);
 
-
-        setContentView(R.layout.activity_demo2);
+        setContentView(textView);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_demo2, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
