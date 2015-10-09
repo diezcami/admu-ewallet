@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    public final static String Da_number = "com.mycompany.Demo.MESSAGE";
+    public final static String Da_number = "com.mycompany.demo.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
         String idNumber = ed.getText().toString();
         Toast toast = Toast.makeText(this, idNumber, Toast.LENGTH_SHORT);
         if (idNumber.equals("131402")){
-            intent.putExtra("Da_number", idNumber);
+            intent.putExtra(Da_number, idNumber);
             startActivity(intent);
         } else if (idNumber.equals("132271")) {
-            intent.putExtra("Da_number", idNumber);
+            intent.putExtra(Da_number, idNumber);
             startActivity(intent);
         }
         else {
