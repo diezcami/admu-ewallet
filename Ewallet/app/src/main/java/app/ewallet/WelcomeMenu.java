@@ -54,12 +54,20 @@ public class WelcomeMenu extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        LocalDBhandler db = new LocalDBhandler(this);
+
         Intent intent = getIntent();
         String message = intent.getStringExtra(MainActivity.Da_number);
 
-        TextView tv = (TextView) findViewById(R.id.tvidnumber);
-        tv.setTextSize(50);
-        tv.setText(message);
+        Student student = db.getStudent(Integer.parseInt(message));
+
+        TextView tvID = (TextView) findViewById(R.id.tvidnumber);
+        tvID.setTextSize(50);
+        tvID.setText(message);
+
+        TextView tvBal = (TextView) findViewById(R.id.tv_actualbalance);
+        tvBal.setTextSize(40);
+        tvBal.setText(Double.toString(student.getBal()));
         //setContentView(textView);
 
         return true;
