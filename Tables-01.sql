@@ -16,7 +16,13 @@ CREATE TABLE buy_transaction (
 CREATE TABLE shop_terminal (
     Shop_Terminal_ID    INTEGER(3) ZEROFILL NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
     balance             FLOAT(8) NOT NULL,
-    pin                 INTEGER(4) NOT NULL,
+    pin                 INTEGER(4) NOT NULL
+);
+
+CREATE TABLE item (
+    Item_ID             INTEGER(3) ZEROFILL NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+    item_name           VARCHAR(20) NOT NULL,
+    item_price          FLOAT(6) NOT NULL
 );
 
 CREATE TABLE stock (
@@ -26,18 +32,12 @@ CREATE TABLE stock (
     FOREIGN KEY (Item_ID) REFERENCES item(Item_ID) ON DELETE CASCADE ON UPDATE RESTRICT
 );
 
-CREATE TABLE order (
+CREATE TABLE item_order (
     Buy_Transaction_ID  INTEGER(6) ZEROFILL NOT NULL,
     Item_ID             INTEGER(3) ZEROFILL NOT NULL,
     quantity            INTEGER(2) NOT NULL,
     FOREIGN KEY (Buy_Transaction_ID) REFERENCES buy_transaction(Buy_Transaction_ID) ON DELETE CASCADE ON UPDATE RESTRICT,
     FOREIGN KEY (Item_ID) REFERENCES item(Item_ID) ON DELETE CASCADE ON UPDATE RESTRICT
-);
-
-CREATE TABLE item (
-    Item_ID             INTEGER(3) ZEROFILL NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
-    item_name           VARCHAR(20) NOT NULL,
-    item_price          FLOAT(6) NOT NULL
 );
 
 CREATE TABLE load_transaction (
