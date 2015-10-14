@@ -97,6 +97,11 @@ public class WelcomeMenu extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onResume() {
+        super.onResume();
+        new AsyncMethod().execute();
+    }
+
     /**
      * This makes that 'loading screen' you see in mobile online games and such lol, it also does some stuff in the background, thus not
      * 'crashing' the system
