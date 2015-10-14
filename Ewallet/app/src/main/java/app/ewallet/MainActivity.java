@@ -93,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
      */
     public void updateDatabase(LocalDBhandler db) {
         Student stud1 = new Student(132271, "Legaspi, Seth Andrei L.", 1234, 100);
-        Student stud2 = new Student(131402, "Domingo, Miguel Adrian", 4321, 145);
+        Student stud2 = new Student(130488, "Domingo, Miguel Adrian", 4321, 145);
 
         if (!db.checkExist(stud1.getID())) {
             db.addStud(stud1);
