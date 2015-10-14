@@ -1,16 +1,16 @@
 <?php
-$con=mysqli_connect("localhost","root","","compsat_db");
+$con=mysqli_connect("localhost","compsato_dogs","hashbr0wn","compsato_dogs");
 if (mysqli_connect_errno($con))
 {
    echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
-$username = $_POST['username'];
-$password = $_POST['password'];
-$result = mysqli_query($con,"SELECT * FROM login_cred where 
-username='$username' and password='$password'");
-$data = 'Allow';
-if (mysqli_num_rows ($result) != 0){
-	echo $data;
+$idnum = $_POST['idnum'];
+$result = mysqli_query($con,"select concat(first_name," ", last_name) from user where id_number = '$idnum'");
+$row = mysqli_fetch_array($result);
+$data = $row[0];
+
+if($data){
+echo $data;
 }
 mysqli_close($con);
 ?>
