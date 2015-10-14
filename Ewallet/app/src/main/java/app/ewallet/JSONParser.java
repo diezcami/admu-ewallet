@@ -1,7 +1,7 @@
 package app.ewallet;
 
 /**
- * Created by Miguel The Vinci on 10/10/2015.
+ *
  */
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +19,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +28,7 @@ import android.util.Log;
 public class JSONParser {
 
     static InputStream is = null;
-    static JSONObject jObj = null;
+    static JSONArray jObj = null;
     static String json = "";
 
     // constructor
@@ -37,8 +38,8 @@ public class JSONParser {
 
     // function get json from url
     // by making HTTP POST or GET mehtod
-    public JSONObject makeHttpRequest(String url, String method,
-                                      List<NameValuePair> params) {
+    public JSONArray makeHttpRequest(String url, String method,
+                                     List<NameValuePair> params) {
 
         // Making HTTP request
         try {
@@ -91,7 +92,7 @@ public class JSONParser {
 
         // try parse the string to a JSON object
         try {
-            jObj = new JSONObject(json);
+            jObj = new JSONArray(json);
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }

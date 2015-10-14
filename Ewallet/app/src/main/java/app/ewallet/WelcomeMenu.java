@@ -1,8 +1,10 @@
 package app.ewallet;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class WelcomeMenu extends ActionBarActivity {
+    public String url = "188.166.242.63";
+
     //tv_actualbalance, tv_balance
 
     // Progress Dialog
@@ -63,7 +72,7 @@ public class WelcomeMenu extends ActionBarActivity {
 
         TextView tvID = (TextView) findViewById(R.id.tvidnumber);
         tvID.setTextSize(50);
-        tvID.setText(message);
+        tvID.setText(student.getName());
 
         TextView tvBal = (TextView) findViewById(R.id.tv_actualbalance);
         tvBal.setTextSize(40);
@@ -86,5 +95,60 @@ public class WelcomeMenu extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * This makes that 'loading screen' you see in mobile online games and such lol, it also does some stuff in the background, thus not
+     * 'crashing' the system
+     */
+    private class AsyncMethod extends AsyncTask<Void, Void, Void> {
+        ProgressDialog pdL = new ProgressDialog(WelcomeMenu.this);
+
+        /**
+         * This is the UI loading screen
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pdL.setMessage("\tLoading...");
+            pdL.show();
+        }
+
+        /**
+         * These are the background tasks (ie. updating of the Database and shiz)
+         * @param voids
+         * @return
+         */
+        @Override
+        protected Void doInBackground(Void... voids) {
+            HttpClient client = new DefaultHttpClient();
+
+
+            JSONObject json = new JSONObject();
+
+            try {
+                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                HttpPost post = new HttpPost(url);
+
+                json.put("","");
+              //  nameValuePairs.add(new BasicNameValuePair("",));
+              // post.setEntity(new UrlEncodedFormEntity());
+
+            } catch (Exception e) {
+
+            }
+
+            return null;
+        }
+
+        /**
+         * When everything is done; this gets rid of loading screen
+         */
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            pdL.dismiss();
+        }
     }
 }

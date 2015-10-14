@@ -1,6 +1,10 @@
 package app.ewallet;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,16 +13,29 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 
 public class MainActivity extends ActionBarActivity {
 
     public final static String Da_number = "com.mycompany.demo.MESSAGE";
+    public String url = "188.166.242.63";
+    LocalDBhandler db = new LocalDBhandler(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LocalDBhandler db = new LocalDBhandler(this);
+
         updateDatabase(db);
     }
 
@@ -42,6 +59,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onResume() {
+        super.onResume();
+        new AsyncMethod().execute();
     }
 
     public void login(View view) {
@@ -79,5 +101,56 @@ public class MainActivity extends ActionBarActivity {
         if (!db.checkExist(stud2.getID())) {
             db.addStud(stud2);
         } else { }
+    }
+
+    /**
+     * This makes that 'loading screen' you see in mobile online games and such lol, it also does some stuff in the background, thus not
+     * 'crashing' the system
+     */
+    private class AsyncMethod extends AsyncTask<Void, Void, Void> {
+        ProgressDialog pdL = new ProgressDialog(MainActivity.this);
+
+        /**
+         * This is the UI loading screen
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pdL.setMessage("\tLoading...");
+            pdL.show();
+        }
+
+        /**
+         * These are the background tasks (ie. updating of the Database and shiz)
+         * @param voids
+         * @return
+         */
+        @Override
+        protected Void doInBackground(Void... voids) {
+            HttpClient client = new DefaultHttpClient();
+
+
+            JSONObject json = new JSONObject();
+
+            try {
+              //  HttpPost post = new HttpPost(url);
+              //  json.put("","");
+
+            } catch (Exception e) {
+
+            }
+
+            return null;
+        }
+
+        /**
+         * When everything is done; this gets rid of loading screen
+         */
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            pdL.dismiss();
+        }
     }
 }
