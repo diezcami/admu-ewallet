@@ -16,9 +16,12 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -26,12 +29,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class WelcomeMenu extends ActionBarActivity {
     public String url = "188.166.242.63";
+    public String name = "0";
+
+    //getting the Intent
+
+
 
     //tv_actualbalance, tv_balance
 
@@ -58,21 +78,22 @@ public class WelcomeMenu extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_menu);
+
+        new AsyncMethod().execute();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         LocalDBhandler db = new LocalDBhandler(this);
-
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.Da_number);
+        String message = intent.getStringExtra(MainActivity.Da_number);;
 
         Student student = db.getStudent(Integer.parseInt(message));
 
         TextView tvID = (TextView) findViewById(R.id.tvidnumber);
         tvID.setTextSize(50);
-        tvID.setText(student.getName());
+        tvID.setText(name);
 
         TextView tvBal = (TextView) findViewById(R.id.tv_actualbalance);
         tvBal.setTextSize(40);
@@ -116,7 +137,7 @@ public class WelcomeMenu extends ActionBarActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            pdL.setMessage("\tLoading...");
+            pdL.setMessage("\tLoading... Waiting...");
             pdL.show();
         }
 
@@ -127,22 +148,36 @@ public class WelcomeMenu extends ActionBarActivity {
          */
         @Override
         protected Void doInBackground(Void... voids) {
-            HttpClient client = new DefaultHttpClient();
+            Intent intent = getIntent();
+            String message = intent.getStringExtra(MainActivity.Da_number);;
 
 
-            JSONObject json = new JSONObject();
+                try {
+                    String link = "http://dogs.compsat.org/server.php";
+                    String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode(message, "UTF-8");
+                    URL url = new URL(link);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            try {
-                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                HttpPost post = new HttpPost(url);
+                    conn.setDoOutput(true);
+                    OutputStreamWriter wr =  new OutputStreamWriter(conn.getOutputStream());
 
-                json.put("","");
-              //  nameValuePairs.add(new BasicNameValuePair("",));
-              // post.setEntity(new UrlEncodedFormEntity());
+                    wr.write(data);
+                    wr.flush();
 
-            } catch (Exception e) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-            }
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+
+                    while ((reader.readLine()) != null) {
+                        sb.append(line);
+                        break;
+                    }
+                    name = sb.toString();
+                    conn.disconnect();
+                } catch (IOException e) {
+                    name = "Error";
+                }
 
             return null;
         }
