@@ -73,18 +73,18 @@ public class MainActivity extends ActionBarActivity {
         String idNumber = ed.getText().toString();
         Toast toast = Toast.makeText(this, idNumber, Toast.LENGTH_SHORT);
 
-        try {
-        Student student = db.getStudent(Integer.parseInt(idNumber));
-        if (student.getID() > 0){
+      //  try {
+       // Student student = db.getStudent(Integer.parseInt(idNumber));
+     //   if (student.getID() > 0){
             intent.putExtra(Da_number, idNumber);
             startActivity(intent);
-        } else {
-            Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
-            toast2.show();
-        } } catch (Exception e) {
-            Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
-            toast2.show();
-        }
+   //     } else {
+      //      Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
+       //     toast2.show();
+      //  } } catch (Exception e) {
+      //      Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
+      //      toast2.show();
+     //   }
     }
 
     /**
@@ -92,8 +92,8 @@ public class MainActivity extends ActionBarActivity {
      * @param db - The database handler that is also technically the database object itself
      */
     public void updateDatabase(LocalDBhandler db) {
-        Student stud1 = new Student(132271, "Legaspi, Seth Andrei L.", 1234, 100);
-        Student stud2 = new Student(130488, "Domingo, Miguel Adrian", 4321, 145);
+        Student stud1 = new Student(144107, "Legaspi, Seth Andrei L.", 1234, 100);
+        Student stud2 = new Student(130488, "Begonia, Basil Miguel B.", 4321, 145);
 
         if (!db.checkExist(stud1.getID())) {
             db.addStud(stud1);
