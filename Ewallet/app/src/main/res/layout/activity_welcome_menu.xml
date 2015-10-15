@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="ID number "
+        android:text="NAME HERE"
         android:id="@+id/tvidnumber"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

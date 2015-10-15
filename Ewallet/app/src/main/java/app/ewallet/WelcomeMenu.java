@@ -49,6 +49,8 @@ public class WelcomeMenu extends ActionBarActivity {
     public String url = "188.166.242.63";
     public String name = "0";
 
+    TextView tvID;
+
     //getting the Intent
 
 
@@ -79,25 +81,24 @@ public class WelcomeMenu extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_menu);
 
-        new AsyncMethod().execute();
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        new AsyncMethod().execute();
+
         LocalDBhandler db = new LocalDBhandler(this);
         Intent intent = getIntent();
         String message = intent.getStringExtra(MainActivity.Da_number);;
 
-        Student student = db.getStudent(Integer.parseInt(message));
+      //  Student student = db.getStudent(Integer.parseInt(message));
 
-        TextView tvID = (TextView) findViewById(R.id.tvidnumber);
-        tvID.setTextSize(50);
-        tvID.setText(name);
 
         TextView tvBal = (TextView) findViewById(R.id.tv_actualbalance);
         tvBal.setTextSize(40);
-        tvBal.setText(Double.toString(student.getBal()));
+        tvBal.setText("100");
         //setContentView(textView);
 
         return true;
@@ -139,6 +140,8 @@ public class WelcomeMenu extends ActionBarActivity {
 
             pdL.setMessage("\tLoading... Waiting...");
             pdL.show();
+
+            tvID = (TextView) findViewById(R.id.tvidnumber);
         }
 
         /**
@@ -149,32 +152,40 @@ public class WelcomeMenu extends ActionBarActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             Intent intent = getIntent();
-            String message = intent.getStringExtra(MainActivity.Da_number);;
+            String message = intent.getStringExtra(MainActivity.Da_number);
 
 
                 try {
+                    //String link = "https://posttestserver.com/post.php";
                     String link = "http://dogs.compsat.org/server.php";
                     String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode(message, "UTF-8");
                     URL url = new URL(link);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
+                    URLConnection conn = url.openConnection();
                     conn.setDoOutput(true);
-                    OutputStreamWriter wr =  new OutputStreamWriter(conn.getOutputStream());
 
+                    OutputStreamWriter wr =  new OutputStreamWriter(conn.getOutputStream());
+                    Log.d("TESTING", data);
                     wr.write(data);
                     wr.flush();
 
+
                     BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
                     StringBuilder sb = new StringBuilder();
-                    String line = null;
+                    String line = "n-";
 
-                    while ((reader.readLine()) != null) {
+                    while ((line = reader.readLine())  != null) {
                         sb.append(line);
                         break;
                     }
-                    name = sb.toString();
-                    conn.disconnect();
+                    if (sb.toString() != null) {
+                        name = line;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvID.setText(name);
+                            }
+                        });
+                    }
                 } catch (IOException e) {
                     name = "Error";
                 }
