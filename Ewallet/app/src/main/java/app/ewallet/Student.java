@@ -2,7 +2,7 @@ package app.ewallet;
 
 /**
  * Created by Seth Legaspi on 10/11/2015.
- * This is the java file that contains the setter and getter methods for the items in the database
+ * This is the java file that contains the setter and getter methods for the items in the Student database
  */
 public class Student {
 
