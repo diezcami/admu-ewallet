@@ -157,7 +157,7 @@ public class WelcomeMenu extends ActionBarActivity {
 
                 try {
                     //String link = "https://posttestserver.com/post.php";
-                    String link = "http://dogs.compsat.org/server.php";
+                    String link = "http://188.166.253.236/server.php";
                     String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode(message, "UTF-8");
                     URL url = new URL(link);
                     URLConnection conn = url.openConnection();
