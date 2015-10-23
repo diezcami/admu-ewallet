@@ -93,12 +93,12 @@ public class WelcomeMenu extends ActionBarActivity {
         Intent intent = getIntent();
         String message = intent.getStringExtra(MainActivity.Da_number);;
 
-      //  Student student = db.getStudent(Integer.parseInt(message));
-
+        Student student = db.getStudent(Integer.parseInt(message));
+        Boolean potato = db.checkExist(Integer.parseInt(message));
 
         TextView tvBal = (TextView) findViewById(R.id.tv_actualbalance);
         tvBal.setTextSize(40);
-        tvBal.setText("100");
+        tvBal.setText(String.valueOf(student.getPIN()));
         //setContentView(textView);
 
         return true;
@@ -164,7 +164,6 @@ public class WelcomeMenu extends ActionBarActivity {
                     conn.setDoOutput(true);
 
                     OutputStreamWriter wr =  new OutputStreamWriter(conn.getOutputStream());
-                    Log.d("TESTING", data);
                     wr.write(data);
                     wr.flush();
 
