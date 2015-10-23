@@ -109,7 +109,7 @@ public class LocalDBhandler extends SQLiteOpenHelper {
      */
     public boolean checkExist(int ID) {
         SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * from TABLE_STUDENTS where ID_Number = " + ID;
+        String query = "SELECT * from Students where ID_Number = " + ID;
         try {
             Cursor cursor = db.rawQuery(query, null);
             if (cursor.getCount() < 1) {

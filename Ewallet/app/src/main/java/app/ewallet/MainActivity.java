@@ -28,13 +28,13 @@ public class MainActivity extends ActionBarActivity {
 
     public final static String Da_number = "com.mycompany.demo.MESSAGE";
     public String url = "188.166.242.63";
-    LocalDBhandler db = new LocalDBhandler(this);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        LocalDBhandler db = new LocalDBhandler(this);
 
         updateDatabase(db);
     }
@@ -67,7 +67,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void login(View view) {
-        LocalDBhandler db = new LocalDBhandler(this);
         Intent intent = (Intent) new Intent(this, WelcomeMenu.class);
         EditText ed = (EditText) findViewById(R.id.etidnumber);
         String idNumber = ed.getText().toString();
