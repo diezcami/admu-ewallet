@@ -1,48 +1,52 @@
 package app.ewallet;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-
+import java.util.HashMap;
 
 public class MainActivity extends ActionBarActivity {
-
-    public final static String Da_number = "com.mycompany.demo.MESSAGE";
-    public String url = "188.166.242.63";
-    LocalDBhandler db = new LocalDBhandler(this);
-
+    LocalShopHandler dbShop;
+    Boolean atLeastOne = false;
+    //EditText itemEt1, itemEt2, itemEt3, itemEt4;
+    //EditText qtyEt1, qtyEt2, QtyEt3, QtyEt4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.home_activity);
+        dbShop = new LocalShopHandler(this);
+        updateDatabase(dbShop);
 
-
-        updateDatabase(db);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        //String message = intent.getStringExtra(MainActivity.Da_number);;
+
+        //  Student student = db.getStudent(Integer.parseInt(message));
+        //setContentView(textView);
+
         return true;
     }
 
@@ -60,97 +64,69 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    public void updateDatabase(LocalShopHandler db) {
+        Item item1 = new Item(1 , "Non-Colored Photocopy", 0.75);
+        Item item2 = new Item(2 , "Colored Photocopy", 3.50);
+        Item item3 = new Item(3 , "Printing", 4.00);
+        Item item4 = new Item(4 , "Colored Printing", 7.75);
+        Item item5 = new Item(5 , "Adobo Rice", 80.00);
 
-    public void onResume() {
-        super.onResume();
-        new AsyncMethod().execute();
-    }
-
-    public void login(View view) {
-        LocalDBhandler db = new LocalDBhandler(this);
-        Intent intent = (Intent) new Intent(this, WelcomeMenu.class);
-        EditText ed = (EditText) findViewById(R.id.etidnumber);
-        String idNumber = ed.getText().toString();
-        Toast toast = Toast.makeText(this, idNumber, Toast.LENGTH_SHORT);
-
-      //  try {
-       // Student student = db.getStudent(Integer.parseInt(idNumber));
-     //   if (student.getID() > 0){
-            intent.putExtra(Da_number, idNumber);
-            startActivity(intent);
-   //     } else {
-      //      Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
-       //     toast2.show();
-      //  } } catch (Exception e) {
-      //      Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
-      //      toast2.show();
-     //   }
-    }
-
-    /**
-     * Should be the one that updates the database at the start of each session
-     * @param db - The database handler that is also technically the database object itself
-     */
-    public void updateDatabase(LocalDBhandler db) {
-        Student stud1 = new Student(144107, "Legaspi, Seth Andrei L.", 1234, 100);
-        Student stud2 = new Student(130488, "Begonia, Basil Miguel B.", 4321, 145);
-
-        if (!db.checkExist(stud1.getID())) {
-            db.addStud(stud1);
+        if (!db.checkExist(item1.getID())) {
+            dbShop.addItem(item1);
         } else { }
-        if (!db.checkExist(stud2.getID())) {
-            db.addStud(stud2);
+        if (!db.checkExist(item2.getID())) {
+            dbShop.addItem(item2);
+        } else { }
+        if (!db.checkExist(item3.getID())) {
+            dbShop.addItem(item3);
+        } else { }
+        if (!db.checkExist(item4.getID())) {
+            dbShop.addItem(item4);
+        } else { }
+        if (!db.checkExist(item5.getID())) {
+            dbShop.addItem(item5);
         } else { }
     }
 
-    /**
-     * This makes that 'loading screen' you see in mobile online games and such lol, it also does some stuff in the background, thus not
-     * 'crashing' the system
-     */
-    private class AsyncMethod extends AsyncTask<Void, Void, Void> {
-        ProgressDialog pdL = new ProgressDialog(MainActivity.this);
+    public void onConfirmItems(View view) {
+        Intent intent = new Intent(this, MainActivity2.class);
 
-        /**
-         * This is the UI loading screen
-         */
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
 
-            pdL.setMessage("\tLoading...");
-            pdL.show();
+        EditText itemEt1 = (EditText) findViewById(R.id.item_editText1);
+        EditText itemEt2 = (EditText) findViewById(R.id.item_editText2);
+        EditText itemEt3 = (EditText) findViewById(R.id.item_editText3);
+        EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
+        EditText qtyEt1 = (EditText) findViewById(R.id.qty_editText1);
+        EditText qtyEt2 = (EditText) findViewById(R.id.qty_editText2);
+        EditText qtyEt3 = (EditText) findViewById(R.id.qty_editText3);
+        EditText qtyEt4 = (EditText) findViewById(R.id.qty_editText4);
+        String item1 = itemEt1.getText().toString();
+        String item2 = itemEt2.getText().toString();
+        String item3 = itemEt3.getText().toString();
+        String item4 = itemEt4.getText().toString();
+        String qty1 = qtyEt1.getText().toString();
+        String qty2 = qtyEt2.getText().toString();
+        String qty3 = qtyEt3.getText().toString();
+        String qty4 = qtyEt4.getText().toString();
+
+        if ( !(item1.equals("") || qty1.equals("")) ) {
+            intent.putExtra("item1", item1);
+            intent.putExtra("qty1", qty1);
+            atLeastOne=true;
+        }
+        if ( !(item2.equals("") || qty2.equals("")) ) {
+            intent.putExtra("item2", item2);
+            atLeastOne=true;
+        }
+        if ( !(item3.equals("") || qty3.equals("")) ) {
+            intent.putExtra("item3", item3);
+            atLeastOne=true;
+        }
+        if ( !(item4.equals("") || qty4.equals("")) ) {
+            intent.putExtra("item4", item4);
+            atLeastOne=true;
         }
 
-        /**
-         * These are the background tasks (ie. updating of the Database and shiz)
-         * @param voids
-         * @return
-         */
-        @Override
-        protected Void doInBackground(Void... voids) {
-            HttpClient client = new DefaultHttpClient();
-
-
-            JSONObject json = new JSONObject();
-
-            try {
-              //  HttpPost post = new HttpPost(url);
-              //  json.put("","");
-
-            } catch (Exception e) {
-
-            }
-
-            return null;
-        }
-
-        /**
-         * When everything is done; this gets rid of loading screen
-         */
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            pdL.dismiss();
-        }
+        startActivity(intent);
     }
 }

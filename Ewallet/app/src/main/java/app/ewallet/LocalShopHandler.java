@@ -19,7 +19,7 @@ public class LocalShopHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "LocalDB_Shop";
 
     //Table name
-    private static final String TABLE_SHOP = "Shop Items";
+    private static final String TABLE_SHOP = "ShopItems";
 
     //Students column names
     private static final String KEY_ITEM_ID = "Item_ID"; //1st column
