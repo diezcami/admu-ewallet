@@ -8,15 +8,15 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Input PIN number:"
         android:id="@+id/pin_tv"
-        android:layout_above="@+id/editText"
+        android:layout_above="@+id/et_pin"
         android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="numberPassword"
+        android:inputType="numberPassword|phone"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/et_pin"
         android:layout_above="@+id/tv_dummy"
         android:layout_centerHorizontal="true" />
 

@@ -19,16 +19,27 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
 public class MainActivity3 extends AppCompatActivity {
+    String message;
+    public final static String Da_number = "com.mycompany.demo.MESSAGE";
+    public String url = "188.166.242.63";
+    int PIN, id;
+    Student currStudent;
+    //boolean studentExist;
+    LocalDBhandler db = new LocalDBhandler(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
-        updateDatabase1(db);
+
+        Intent intent = getIntent();
+        message = intent.getStringExtra(MainActivity2.Da_number);
+        id = Integer.parseInt(message);
+        currStudent = db.getStudent(id);
+        PIN = currStudent.getPIN();
+        //studentExist = db.checkExist(id);
     }
 
-    public final static String Da_number = "com.mycompany.demo.MESSAGE";
-    public String url = "188.166.242.63";
-    LocalDBhandler db = new LocalDBhandler(this);
 
 
 
@@ -44,6 +55,8 @@ public class MainActivity3 extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+        //studentExist = db.checkExist(id);
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -59,50 +72,45 @@ public class MainActivity3 extends AppCompatActivity {
         new AsyncMethod().execute();
     }
 
-    public void login(View view) {
+    public void confirmPIN(View view)
+    {
         LocalDBhandler db = new LocalDBhandler(this);
         Intent intent = (Intent) new Intent(this, MainActivity4.class);
-        EditText ed = (EditText) findViewById(R.id.etidnumber);
-        String idNumber = ed.getText().toString();
-        Toast toast = Toast.makeText(this, idNumber, Toast.LENGTH_SHORT);
+        EditText etPin = (EditText) findViewById(R.id.et_pin);
+        String input = etPin.getText().toString();
+        int inputInt = Integer.parseInt(input);
 
-        //  try {
-        // Student student = db.getStudent(Integer.parseInt(idNumber));
-        //   if (student.getID() > 0){
-        intent.putExtra(Da_number, idNumber);
-        startActivity(intent);
-        //     } else {
-        //      Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
-        //     toast2.show();
-        //  } } catch (Exception e) {
-        //      Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
-        //      toast2.show();
-        //   }
+        if(inputInt == PIN)
+        {
+            intent.putExtra(Da_number, message);
+            startActivity(intent);
+        }
+        else
+        {
+            Toast toast = Toast.makeText(this, "Invalid PIN", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        Student localstudent = db.getStudent(id);
+        int localPin = localstudent.getPIN();
+        String strlocalPin = String.valueOf(localPin);
+        //Toast toast = Toast.makeText(this, strlocalPin, Toast.LENGTH_SHORT);
+        // toast.show();
+
     }
+
 
     /**
      * Should be the one that updates the database at the start of each session
      * @param db - The database handler that is also technically the database object itself
      */
 
-    public void updateDatabase1(LocalDBhandler db) {
-        Student stud1 = new Student(144107, "Legaspi, Seth Andrei L.", 1234, 100);
-        Student stud2 = new Student(130488, "Begonia, Basil Miguel B.", 4321, 145);
-
-        if (!db.checkExist(stud1.getID())) {
-            db.addStud(stud1);
-        } else { }
-        if (!db.checkExist(stud2.getID())) {
-            db.addStud(stud2);
-        } else { }
-    }
 
     /**
      * This makes that 'loading screen' you see in mobile online games and such lol, it also does some stuff in the background, thus not
      * 'crashing' the system
      */
     private class AsyncMethod extends AsyncTask<Void, Void, Void> {
-        ProgressDialog pdL = new ProgressDialog(MainActivity2.this);
+        ProgressDialog pdL = new ProgressDialog(MainActivity3.this);
 
         /**
          * This is the UI loading screen
@@ -149,20 +157,4 @@ public class MainActivity3 extends AppCompatActivity {
     }
 }
 
-    public void confirmPIN(View view)
-    {
-        LocalDBhandler db = new LocalDBhandler(this);
-        Intent intent = (Intent) new Intent(this, MainActivity3.class);
-        EditText ed = (EditText) findViewById(R.id.etidnumber);
-        String idNumber = ed.getText().toString();
-        Toast toast = Toast.makeText(this, idNumber, Toast.LENGTH_SHORT);
 
-        //  try {
-        // Student student = db.getStudent(Integer.parseInt(idNumber));
-        //   if (student.getID() > 0){
-        intent.putExtra(Da_number, idNumber);
-        startActivity(intent);
-    }
-
-
-}

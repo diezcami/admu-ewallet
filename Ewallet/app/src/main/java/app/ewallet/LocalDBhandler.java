@@ -42,7 +42,7 @@ public class LocalDBhandler extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_STUDENTS + "(" +
+        String CREATE_TABLE = "CREATE TABLE " + "Students" + "(" +
                 KEY_ID_NUMBER + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," +
                 KEY_PIN + " INT," + KEY_BALANCE + " NUM" + ")";
         db.execSQL(CREATE_TABLE);
@@ -109,7 +109,7 @@ public class LocalDBhandler extends SQLiteOpenHelper {
      */
     public boolean checkExist(int ID) {
         SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * from TABLE_STUDENTS where ID_Number = " + ID;
+        String query = "SELECT * from Students where ID_Number = " + ID;
         try {
             Cursor cursor = db.rawQuery(query, null);
             if (cursor.getCount() < 1) {

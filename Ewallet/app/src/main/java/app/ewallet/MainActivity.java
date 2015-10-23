@@ -34,8 +34,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
-        dbShop = new LocalShopHandler(this);
-        updateDatabase(dbShop);
+
 
     }
 
@@ -46,7 +45,8 @@ public class MainActivity extends ActionBarActivity {
 
         //  Student student = db.getStudent(Integer.parseInt(message));
         //setContentView(textView);
-
+        dbShop = new LocalShopHandler(this);
+        updateDatabase(dbShop);
         return true;
     }
 

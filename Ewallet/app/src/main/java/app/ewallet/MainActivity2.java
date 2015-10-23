@@ -21,6 +21,7 @@ public class MainActivity2 extends ActionBarActivity {
     public final static String Da_number = "com.mycompany.demo.MESSAGE";
     public String url = "188.166.242.63";
     LocalDBhandler db = new LocalDBhandler(this);
+    int idNumberint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,20 +64,35 @@ public class MainActivity2 extends ActionBarActivity {
         Intent intent = (Intent) new Intent(this, MainActivity3.class);
         EditText ed = (EditText) findViewById(R.id.etidnumber);
         String idNumber = ed.getText().toString();
-        Toast toast = Toast.makeText(this, idNumber, Toast.LENGTH_SHORT);
 
-      //  try {
-       // Student student = db.getStudent(Integer.parseInt(idNumber));
-     //   if (student.getID() > 0){
-            intent.putExtra(Da_number, idNumber);
-            startActivity(intent);
-   //     } else {
-      //      Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
-       //     toast2.show();
-      //  } } catch (Exception e) {
-      //      Toast toast2 = Toast.makeText(this, "INVALID ID NUMBER", Toast.LENGTH_SHORT);
-      //      toast2.show();
-     //   }
+
+        if(idNumber.equals(""))
+        {
+            idNumberint = 0;
+        }
+        else
+        {
+            idNumberint = Integer.parseInt(idNumber);
+        }
+        try {
+            Student student = db.getStudent(idNumberint);
+            if (student.getID() > 0) {
+                intent.putExtra(Da_number, idNumber);
+                startActivity(intent);
+            } else {
+                Toast toast = Toast.makeText(this, "WRONG CREDENTIALS", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        } catch (Exception e)
+        {
+            Toast toast = Toast.makeText(this, "WRONG CREDENTIALSS", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+
+
+
+
     }
 
     /**
