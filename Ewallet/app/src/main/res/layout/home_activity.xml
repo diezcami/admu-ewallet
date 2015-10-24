@@ -102,17 +102,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text=""
-            android:layout_weight="1"/>
-       <Button
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="SYNC"
+            android:id="@+id/sync"
+            android:onClick="sync"
+            android:layout_gravity="bottom" />
+
+        <Button
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
             android:onClick="onConfirmItems"
            android:id="@+id/accept_items"
-           android:text="Accept" />
+           android:text="Accept"
+            android:layout_marginLeft="85dp" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

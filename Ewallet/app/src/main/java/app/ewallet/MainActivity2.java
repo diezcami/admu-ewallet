@@ -158,11 +158,6 @@ public class MainActivity2 extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onResume() {
-        super.onResume();
-        new AsyncMethod().execute();
-    }
-
     public void login(View view) {
         LocalDBhandler db = new LocalDBhandler(this);
         Intent intent = (Intent) new Intent(this, MainActivity3.class);
@@ -205,15 +200,7 @@ public class MainActivity2 extends ActionBarActivity {
      */
 
     public void updateDatabase1(LocalDBhandler db) {
-        Student stud1 = new Student(144107, "Legaspi, Seth Andrei L.", 1234, 100);
-        Student stud2 = new Student(130488, "Begonia, Basil Miguel B.", 4321, 145);
 
-        if (!db.checkExist(stud1.getID())) {
-            db.addStud(stud1);
-        } else { }
-        if (!db.checkExist(stud2.getID())) {
-            db.addStud(stud2);
-        } else { }
     }
 
     /**
