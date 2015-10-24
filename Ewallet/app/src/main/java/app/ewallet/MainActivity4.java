@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -56,7 +57,7 @@ public class MainActivity4 extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome_menu);
+        setContentView(R.layout.activity_main4);
 
 
     }
@@ -100,7 +101,12 @@ public class MainActivity4 extends ActionBarActivity {
         super.onResume();
         new AsyncMethod().execute();
     }
-
+    public void checkOut(View view)
+    {
+        Intent intent = (Intent) new Intent(this, MainActivity5.class);
+        startActivity(intent);
+        this.finish();
+    }
     /**
      * This makes that 'loading screen' you see in mobile online games and such lol, it also does some stuff in the background, thus not
      * 'crashing' the system
@@ -178,5 +184,8 @@ public class MainActivity4 extends ActionBarActivity {
             super.onPostExecute(result);
             pdL.dismiss();
         }
+
+
+
     }
 }

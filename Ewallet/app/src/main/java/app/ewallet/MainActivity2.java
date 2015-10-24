@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.client.HttpClient;
@@ -28,6 +29,33 @@ public class MainActivity2 extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+        Intent incomingIntent = getIntent();
+        TextView item1 = (TextView) findViewById(R.id.item_1);
+        TextView item2 = (TextView) findViewById(R.id.item_2);
+        TextView item3 = (TextView) findViewById(R.id.item_3);
+        TextView item4 = (TextView) findViewById(R.id.item_4);
+        TextView item1qty = (TextView) findViewById(R.id.item_1qty);
+        TextView item2qty = (TextView) findViewById(R.id.item_2qty);
+        TextView item3qty = (TextView) findViewById(R.id.item_3qty);
+        TextView item4qty = (TextView) findViewById(R.id.item_4qty);
+
+        String order1 = incomingIntent.getStringExtra("item1");
+        String order1qty = incomingIntent.getStringExtra("qty1");
+        String order2 = incomingIntent.getStringExtra("item2");
+        String order2qty = incomingIntent.getStringExtra("qty2");
+        String order3 = incomingIntent.getStringExtra("item3");
+        String order3qty = incomingIntent.getStringExtra("qty3");
+        String order4 = incomingIntent.getStringExtra("item4");
+        String order4qty = incomingIntent.getStringExtra("qty4");
+
+        item1.setText(order1);
+        item1qty.setText(order1qty);
+        item2.setText(order2);
+        item2qty.setText(order2qty);
+        item3.setText(order3);
+        item3qty.setText(order3qty);
+        item4.setText(order4);
+        item4qty.setText(order4qty);
 
         updateDatabase1(db);
     }

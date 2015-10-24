@@ -19,26 +19,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".MainActivity2"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-
-        <activity android:name=".MainActivity3"
+        <activity
+            android:name=".MainActivity3"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-
-        <activity android:name=".MainActivity4"
+        <activity
+            android:name=".MainActivity4"
             android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".MainActivity5"
+            android:label="@string/title_activity_main5"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 
 </manifest>
-
-
-

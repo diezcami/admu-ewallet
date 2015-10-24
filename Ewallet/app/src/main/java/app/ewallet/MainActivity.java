@@ -109,24 +109,28 @@ public class MainActivity extends ActionBarActivity {
         String qty3 = qtyEt3.getText().toString();
         String qty4 = qtyEt4.getText().toString();
 
-        if ( !(item1.equals("") || qty1.equals("")) ) {
+        //if ( !(item1.equals("") || qty1.equals("")) ) {
             intent.putExtra("item1", item1);
             intent.putExtra("qty1", qty1);
             atLeastOne=true;
-        }
-        if ( !(item2.equals("") || qty2.equals("")) ) {
+        //}
+        //if ( !(item2.equals("") || qty2.equals("")) ) {
             intent.putExtra("item2", item2);
+            intent.putExtra("qty2", qty2);
             atLeastOne=true;
-        }
-        if ( !(item3.equals("") || qty3.equals("")) ) {
+        //}
+        //if ( !(item3.equals("") || qty3.equals("")) ) {
             intent.putExtra("item3", item3);
+            intent.putExtra("qty3", qty3);
             atLeastOne=true;
-        }
-        if ( !(item4.equals("") || qty4.equals("")) ) {
+        //}
+        //if ( !(item4.equals("") || qty4.equals("")) ) {
             intent.putExtra("item4", item4);
+            intent.putExtra("qty4", qty4);
             atLeastOne=true;
-        }
+        //}
 
         startActivity(intent);
+
     }
 }
