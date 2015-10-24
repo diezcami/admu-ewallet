@@ -4,7 +4,7 @@
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context="app.ewallet.WelcomeMenu">
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context="app.ewallet.HomeMenu">
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,6 +47,26 @@
 
         android:layout_above="@+id/tv_balance"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Yes"
+        android:id="@+id/confirm_transaction"
+        android:layout_marginBottom="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/tv_balance"
+        android:onClick="checkOut"
+        android:layout_toStartOf="@+id/tv_balance" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exit"
+        android:id="@+id/exit_fr_act4"
+        android:layout_alignBottom="@+id/confirm_transaction"
+        android:layout_toRightOf="@+id/tv_balance"
+        android:layout_toEndOf="@+id/tv_balance" />
 
 
 </RelativeLayout>

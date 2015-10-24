@@ -42,7 +42,7 @@ public class LocalDBhandler extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_STUDENTS + "(" +
+        String CREATE_TABLE = "CREATE TABLE " + "Students" + "(" +
                 KEY_ID_NUMBER + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," +
                 KEY_PIN + " INT," + KEY_BALANCE + " NUM" + ")";
         db.execSQL(CREATE_TABLE);
