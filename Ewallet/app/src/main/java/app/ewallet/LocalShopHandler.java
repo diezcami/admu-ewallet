@@ -1,16 +1,21 @@
 package app.ewallet;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-
-/**
- * Created by Seth Legaspi on 10/18/2015.
- * This is the java file that handles all local database interactions
- */
+import android.util.Log;
 public class LocalShopHandler extends SQLiteOpenHelper {
+
 
     //Database Version
     private static final int DATABASE_VERSION = 1;
@@ -19,7 +24,7 @@ public class LocalShopHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "LocalDB_Shop";
 
     //Table name
-    private static final String TABLE_SHOP = "Shop Items";
+    private static final String TABLE_SHOP = "ShopItems";
 
     //Students column names
     private static final String KEY_ITEM_ID = "Item_ID"; //1st column
@@ -101,7 +106,9 @@ public class LocalShopHandler extends SQLiteOpenHelper {
      */
     public boolean checkExist(int id) {
         SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * from LocalDB_Shop where Item_ID = " + id;
+
+        String query = "SELECT * from ShopItems where Item_ID = " + id;
+
         try {
             Cursor cursor = db.rawQuery(query, null);
             if (cursor.getCount() < 1) {
