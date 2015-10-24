@@ -34,10 +34,18 @@ public class MainActivity2 extends ActionBarActivity {
         TextView item2 = (TextView) findViewById(R.id.item_2);
         TextView item3 = (TextView) findViewById(R.id.item_3);
         TextView item4 = (TextView) findViewById(R.id.item_4);
+        TextView item1price = (TextView) findViewById(R.id.item_1price);
+        TextView item2price = (TextView) findViewById(R.id.item_2price);
+        TextView item3price = (TextView) findViewById(R.id.item_3price);
+        TextView item4price = (TextView) findViewById(R.id.item_4price);
         TextView item1qty = (TextView) findViewById(R.id.item_1qty);
         TextView item2qty = (TextView) findViewById(R.id.item_2qty);
         TextView item3qty = (TextView) findViewById(R.id.item_3qty);
         TextView item4qty = (TextView) findViewById(R.id.item_4qty);
+        TextView item1total = (TextView) findViewById(R.id.item_1total);
+        TextView item2total = (TextView) findViewById(R.id.item_2total);
+        TextView item3total = (TextView) findViewById(R.id.item_3total);
+        TextView item4total = (TextView) findViewById(R.id.item_4total);
 
         String order1 = incomingIntent.getStringExtra("item1");
         String order1qty = incomingIntent.getStringExtra("qty1");
@@ -57,6 +65,14 @@ public class MainActivity2 extends ActionBarActivity {
         item4.setText(order4);
         item4qty.setText(order4qty);
 
+        item1price.setText("123");
+        item2price.setText("123");
+        item3price.setText("123");
+        item4price.setText("123");
+        item1total.setText("123123");
+        item2total.setText("123123");
+        item3total.setText("123123");
+        item4total.setText("123123");
         updateDatabase1(db);
     }
 
