@@ -348,7 +348,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Input ID number"
             android:id="@+id/textView"
-            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 
         <EditText
@@ -368,8 +368,28 @@
             android:paddingRight="40dp"
             android:id="@+id/button"
             android:onClick="login"
-            android:layout_centerVertical="true"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Total:"
+            android:id="@+id/tv_total1"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/etidnumber"
+            android:layout_alignEnd="@+id/etidnumber" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0"
+            android:id="@+id/allitems_total"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/tv_total1"
+            android:layout_toEndOf="@+id/tv_total1" />
     </RelativeLayout>
 
 

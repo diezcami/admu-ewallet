@@ -23,7 +23,7 @@ public class MainActivity2 extends ActionBarActivity {
     public String url = "188.166.242.63";
     LocalDBhandler db = new LocalDBhandler(this);
     int idNumberint;
-
+    Double total = 0.0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,32 +47,92 @@ public class MainActivity2 extends ActionBarActivity {
         TextView item3total = (TextView) findViewById(R.id.item_3total);
         TextView item4total = (TextView) findViewById(R.id.item_4total);
 
-        String order1 = incomingIntent.getStringExtra("item1");
-        String order1qty = incomingIntent.getStringExtra("qty1");
-        String order2 = incomingIntent.getStringExtra("item2");
-        String order2qty = incomingIntent.getStringExtra("qty2");
-        String order3 = incomingIntent.getStringExtra("item3");
-        String order3qty = incomingIntent.getStringExtra("qty3");
-        String order4 = incomingIntent.getStringExtra("item4");
-        String order4qty = incomingIntent.getStringExtra("qty4");
+        if(!incomingIntent.getStringExtra("item1").equals(""))
+        {
+            String order1 = incomingIntent.getStringExtra("item1");
+            String order1qty = incomingIntent.getStringExtra("qty1");
+            String order1Price = incomingIntent.getStringExtra("item1Price");
+            Double order1Total = Double.parseDouble(order1Price);
+            order1Total = Integer.parseInt(order1qty) * order1Total;
+            total += order1Total;
+            item1.setText(order1);
+            item1qty.setText(order1qty);
+            item1price.setText(order1Price);
+            item1total.setText(String.valueOf(order1Total));
+        }
+        else
+        {
+            item1.setText("");
+            item1qty.setText("");
+            item1price.setText("");
+            item1total.setText("");
+        }
 
-        item1.setText(order1);
-        item1qty.setText(order1qty);
-        item2.setText(order2);
-        item2qty.setText(order2qty);
-        item3.setText(order3);
-        item3qty.setText(order3qty);
-        item4.setText(order4);
-        item4qty.setText(order4qty);
+        if(!incomingIntent.getStringExtra("item2").equals(""))
+        {
+            String order2 = incomingIntent.getStringExtra("item2");
+            String order2qty = incomingIntent.getStringExtra("qty2");
+            String order2Price = incomingIntent.getStringExtra("item2Price");
+            Double order2Total = Double.parseDouble(order2Price);
+            order2Total = Integer.parseInt(order2qty) * order2Total;
+            total += order2Total;
+            item2.setText(order2);
+            item2qty.setText(order2qty);
+            item2price.setText(order2Price);
+            item2total.setText(String.valueOf(order2Total));
+        }
+        else
+        {
+            item2.setText("");
+            item2qty.setText("");
+            item2price.setText("");
+            item2total.setText("");
+        }
 
-        item1price.setText("123");
-        item2price.setText("123");
-        item3price.setText("123");
-        item4price.setText("123");
-        item1total.setText("123123");
-        item2total.setText("123123");
-        item3total.setText("123123");
-        item4total.setText("123123");
+        if(!incomingIntent.getStringExtra("item3").equals(""))
+        {
+            String order3 = incomingIntent.getStringExtra("item3");
+            String order3qty = incomingIntent.getStringExtra("qty3");
+            String order3Price = incomingIntent.getStringExtra("item3Price");
+            Double order3Total = Double.parseDouble(order3Price);
+            order3Total = Integer.parseInt(order3qty) * order3Total;
+            total += order3Total;
+            item3.setText(order3);
+            item3qty.setText(order3qty);
+            item3price.setText(order3Price);
+            item3total.setText(String.valueOf(order3Total));
+        }
+        else
+        {
+            item3.setText("");
+            item3qty.setText("");
+            item3price.setText("");
+            item3total.setText("");
+        }
+
+        if(!incomingIntent.getStringExtra("item4").equals(""))
+        {
+            String order4 = incomingIntent.getStringExtra("item4");
+            String order4qty = incomingIntent.getStringExtra("qty4");
+            String order4Price = incomingIntent.getStringExtra("item2Price");
+            Double order4Total = Double.parseDouble(order4Price);
+            order4Total = Integer.parseInt(order4qty) * order4Total;
+            total += order4Total;
+            item4.setText(order4);
+            item4qty.setText(order4qty);
+            item4price.setText(order4Price);
+            item4total.setText(String.valueOf(order4Total));
+        }
+        else
+        {
+            item4.setText("");
+            item4qty.setText("");
+            item4price.setText("");
+            item4total.setText("");
+        }
+
+        TextView totalTv = (TextView) findViewById(R.id.allitems_total);
+        totalTv.setText(String.valueOf(total));
         updateDatabase1(db);
     }
 
