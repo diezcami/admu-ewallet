@@ -107,7 +107,7 @@ public class LocalShopHandler extends SQLiteOpenHelper {
     public boolean checkExist(int id) {
         SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT * from ShopItems where Item_ID = " + id;
+        String query = "SELECT * from " + TABLE_SHOP + " where Item_ID = " + id;
 
         try {
             Cursor cursor = db.rawQuery(query, null);

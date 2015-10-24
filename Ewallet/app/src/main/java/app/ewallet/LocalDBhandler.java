@@ -71,7 +71,6 @@ public class LocalDBhandler extends SQLiteOpenHelper {
         values.put(KEY_ID_NUMBER, student.getID()); //ID Number of the student -1st col
         values.put(KEY_NAME, student.getName()); //Name of the student -2nd col
         values.put(KEY_PIN, student.getPIN()); //PIN of the student -3rd col
-        values.put(KEY_BALANCE, student.getBal()); //Balance of the student -4th col
 
         db.insert(TABLE_STUDENTS, null, values);
         db.close();
@@ -96,7 +95,6 @@ public class LocalDBhandler extends SQLiteOpenHelper {
         student.setID(Integer.parseInt(cursor.getString(0)));
         student.setName(cursor.getString(1));
         student.setPin(Integer.parseInt(cursor.getString(2)));
-        student.setBal(Double.parseDouble(cursor.getString(3)));
 
         db.close();
         return student;
@@ -109,7 +107,7 @@ public class LocalDBhandler extends SQLiteOpenHelper {
      */
     public boolean checkExist(int ID) {
         SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * from Students where ID_Number = " + ID;
+        String query = "SELECT * from " + TABLE_STUDENTS + " where ID_Number = " + ID;
         try {
             Cursor cursor = db.rawQuery(query, null);
             if (cursor.getCount() < 1) {

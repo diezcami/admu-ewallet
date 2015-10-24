@@ -8,7 +8,6 @@ public class Student {
 
     private int _id_number;
     private int _pin;
-    private double _balance;
     private String _name; //(Last, First)
 
     public Student() {
@@ -19,13 +18,11 @@ public class Student {
      * Constructs the student entry object
      * @param id - id number
      * @param pin - pin passcode
-     * @param bal - balance
      * @param name - name (Last, First)
      */
-    public Student(int id, String name, int pin, double bal ) {
+    public Student(int id, String name, int pin ) {
         this._id_number = id;
         this._pin = pin;
-        this._balance = bal;
         this._name = name;
     }
 
@@ -59,22 +56,6 @@ public class Student {
      */
     public int getPIN() {
         return this._pin;
-    }
-
-    /**
-     *  Sets the current balance of the student
-     * @param bal - New Balance of the student
-     */
-    public void setBal(double bal) {
-        this._balance = bal;
-    }
-
-    /**
-     *  Gets the balance of the student
-     * @return - Returns the current balance of the student
-     */
-    public double getBal() {
-        return this._balance;
     }
 
     /**
