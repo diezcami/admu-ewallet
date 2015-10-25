@@ -160,7 +160,7 @@ public class MainActivity2 extends ActionBarActivity {
 
     public void login(View view) {
         LocalDBhandler db = new LocalDBhandler(this);
-        Intent intent = (Intent) new Intent(this, MainActivity3.class);
+        Intent intent0 = (Intent) new Intent(this, MainActivity3.class);
         EditText ed = (EditText) findViewById(R.id.etidnumber);
         String idNumber = ed.getText().toString();
 
@@ -176,8 +176,10 @@ public class MainActivity2 extends ActionBarActivity {
         try {
             Student student = db.getStudent(idNumberint);
             if (student.getID() > 0) {
-                intent.putExtra(Da_number, idNumber);
-                startActivity(intent);
+                intent0.putExtra(Da_number, idNumber);
+                intent0.putExtra("idnum", idNumber);
+                intent0.putExtra("total", String.valueOf(total));
+                startActivity(intent0);
             } else {
                 Toast toast = Toast.makeText(this, "WRONG CREDENTIALS", Toast.LENGTH_SHORT);
                 toast.show();

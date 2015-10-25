@@ -18,6 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -247,6 +248,40 @@ public class MainActivity extends ActionBarActivity {
             if (!db.checkExist(stud2.getID())) {
                 db.addStud(stud2);
             } else { }
+
+            try {
+                String link = "http://188.166.253.236/populate.php";
+                String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode("stubbyChicken", "UTF-8");
+                URL urlNew = new URL(link);
+                URLConnection conn = urlNew.openConnection();
+                conn.setDoOutput(true);
+
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                Log.d("TESTING", data);
+                wr.write(data);
+                wr.flush();
+
+
+
+                BufferedInputStream bufferedStream = new BufferedInputStream(conn.getInputStream());
+                InputStreamReader streamReader = new InputStreamReader(bufferedStream);
+                BufferedReader bufferedReader = new BufferedReader(streamReader);
+                StringBuilder sb = new StringBuilder();
+                String line = bufferedReader.readLine();
+                while (line != null) {
+                    sb.append(line);
+                    line = bufferedReader.readLine();
+                }
+
+                JSONObject jo = new JSONObject(sb.toString());
+
+                //Do shit that populates local DB here
+
+                bufferedStream.close();
+                bufferedReader.close();
+            } catch (Exception e) {
+
+            }
 
             return null;
         }
