@@ -79,10 +79,15 @@ public class MainActivity3 extends AppCompatActivity {
         EditText etPin = (EditText) findViewById(R.id.et_pin);
         String input = etPin.getText().toString();
         int inputInt = Integer.parseInt(input);
+        Intent getIntent = getIntent();
+        String idnum = getIntent.getStringExtra("idnum");
+        String total = getIntent.getStringExtra("total");
 
         if(inputInt == PIN)
         {
             intent.putExtra(Da_number, message);
+            intent.putExtra("idnum", idnum);
+            intent.putExtra("total",total);
             startActivity(intent);
         }
         else

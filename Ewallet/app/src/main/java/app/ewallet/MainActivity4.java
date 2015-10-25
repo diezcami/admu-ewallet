@@ -1,10 +1,13 @@
 package app.ewallet;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,9 +15,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
@@ -27,10 +33,13 @@ public class MainActivity4 extends ActionBarActivity {
     public String url = "http://188.166.253.236/server.php";
     public String name = "0";
 
+    public boolean getBalance = false;
+
     TextView tvID;
+    TextView tvBal;
 
-    //getting the Intent
-
+    //LocalStudent database handler
+    LocalDBhandler db = new LocalDBhandler(this);
 
 
     //tv_actualbalance, tv_balance
@@ -67,16 +76,7 @@ public class MainActivity4 extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         new AsyncMethod().execute();
 
-        LocalDBhandler db = new LocalDBhandler(this);
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity2.Da_number);;
 
-        //  Student student = db.getStudent(Integer.parseInt(message));
-
-
-        TextView tvBal = (TextView) findViewById(R.id.tv_actualbalance);
-        tvBal.setTextSize(40);
-        tvBal.setText("100");
         //setContentView(textView);
 
         return true;
@@ -125,6 +125,7 @@ public class MainActivity4 extends ActionBarActivity {
             pdL.show();
 
             tvID = (TextView) findViewById(R.id.tvidnumber);
+            tvBal = (TextView) findViewById(R.id.tv_actualbalance);
         }
 
         /**
@@ -132,45 +133,90 @@ public class MainActivity4 extends ActionBarActivity {
          * @param voids
          * @return
          */
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         @Override
         protected Void doInBackground(Void... voids) {
             Intent intent = getIntent();
-            String message = intent.getStringExtra(MainActivity2.Da_number);
+            final String idNumber = intent.getExtras().getString("idnum");
+            final String total = intent.getExtras().getString("total");
+            if (getBalance == false) {
 
 
-            try {
-                //String link = "https://posttestserver.com/post.php";
-                String link = "http://dogs.compsat.org/server.php";
-                String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode(message, "UTF-8");
-                URL url = new URL(link);
-                URLConnection conn = url.openConnection();
-                conn.setDoOutput(true);
-
-                OutputStreamWriter wr =  new OutputStreamWriter(conn.getOutputStream());
-                Log.d("TESTING", data);
-                wr.write(data);
-                wr.flush();
+                try {
 
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line = "n-";
+                    //String link = "https://posttestserver.com/post.php";
+                    String link = url;
+                    String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode(idNumber, "UTF-8");
+                    URL urlNew = new URL(link);
+                    URLConnection conn = urlNew.openConnection();
+                    conn.setDoOutput(true);
 
-                while ((line = reader.readLine())  != null) {
-                    sb.append(line);
-                    break;
+                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                    Log.d("TESTING", data);
+                    wr.write(data);
+                    wr.flush();
+
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = "n-";
+
+
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                        break;
+                    }
+
+                    if (sb.toString() != null) {
+                        name = line;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                //  Student student = db.getStudent(Integer.parseInt(message));
+
+                                tvID.setText(name);
+
+                                tvBal.setTextSize(40);
+                                tvBal.setText(idNumber);
+                            }
+                        });
+                    }
+                    reader.close();
+                    wr.close();
+                } catch (IOException e) {
+                    name = "Error";
                 }
-                if (sb.toString() != null) {
-                    name = line;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvID.setText(name);
-                        }
-                    });
+
+                getBalance = true;
+            } else {
+
+                try {
+                    String link = "http://188.166.253.236/populate.php";
+                    String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode(idNumber, "UTF-8");
+                    URL urlNew = new URL(link);
+                    URLConnection conn = urlNew.openConnection();
+                    conn.setDoOutput(true);
+
+
+                    BufferedInputStream bufferedStream = new BufferedInputStream(conn.getInputStream());
+                    InputStreamReader streamReader = new InputStreamReader(bufferedStream);
+                    BufferedReader bufferedReader = new BufferedReader(streamReader);
+                    StringBuilder sb = new StringBuilder();
+                    String line = bufferedReader.readLine();
+                    while (line != null) {
+                        sb.append(line);
+                        line = bufferedReader.readLine();
+                    }
+
+                    JSONObject jo = new JSONObject(sb.toString());
+
+                    bufferedStream.close();
+                    bufferedReader.close();
+                } catch (Exception e) {
+
                 }
-            } catch (IOException e) {
-                name = "Error";
             }
 
             return null;
