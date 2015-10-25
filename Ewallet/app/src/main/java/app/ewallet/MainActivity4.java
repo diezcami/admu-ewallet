@@ -3,6 +3,7 @@ package app.ewallet;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
@@ -14,29 +15,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity4 extends ActionBarActivity {
-    public String url = "http://188.166.253.236/server.php";
+    public String url = "http://188.166.253.236/index.php/User_Controller/balance/";
     public String name = "0";
 
     public boolean getBalance = false;
 
     TextView tvID;
     TextView tvBal;
+
+    String newBalTemp = "0";
 
     //LocalStudent database handler
     LocalDBhandler db = new LocalDBhandler(this);
@@ -88,7 +98,6 @@ public class MainActivity4 extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -139,6 +148,9 @@ public class MainActivity4 extends ActionBarActivity {
             Intent intent = getIntent();
             final String idNumber = intent.getExtras().getString("idnum");
             final String total = intent.getExtras().getString("total");
+            final Student stud = db.getStudent(Integer.parseInt(idNumber));
+
+
             if (getBalance == false) {
 
 
@@ -147,18 +159,27 @@ public class MainActivity4 extends ActionBarActivity {
 
                     //String link = "https://posttestserver.com/post.php";
                     String link = url;
-                    String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode(idNumber, "UTF-8");
+
                     URL urlNew = new URL(link);
                     URLConnection conn = urlNew.openConnection();
                     conn.setDoOutput(true);
 
-                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                    Log.d("TESTING", data);
-                    wr.write(data);
+                    Uri.Builder builder = new Uri.Builder()
+                            .appendQueryParameter("id_num", idNumber);
+
+                    final String query = builder.build().getEncodedQuery();
+
+                    OutputStream os = conn.getOutputStream();
+
+                    BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                    wr.write(query);
                     wr.flush();
 
+                    InputStream is = conn.getInputStream(); //throws IOException here and jmps to catch
+                    BufferedInputStream bufferedStream = new BufferedInputStream(is);
+                    InputStreamReader inputReader = new InputStreamReader(bufferedStream);
+                    BufferedReader reader = new BufferedReader(inputReader);
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     StringBuilder sb = new StringBuilder();
                     String line = "n-";
 
@@ -167,53 +188,59 @@ public class MainActivity4 extends ActionBarActivity {
                         sb.append(line);
                         break;
                     }
+                    JSONObject jo = new JSONObject(sb.toString());
 
+                    final String balance = jo.getJSONObject("Bal").getString("balance");
+                    newBalTemp = balance;
                     if (sb.toString() != null) {
-                        name = line;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
                                 //  Student student = db.getStudent(Integer.parseInt(message));
-
-                                tvID.setText(name);
-
+                                tvID.setText(stud.getName());
                                 tvBal.setTextSize(40);
-                                tvBal.setText(idNumber);
+                                tvBal.setText(balance);
                             }
                         });
                     }
                     reader.close();
                     wr.close();
-                } catch (IOException e) {
-                    name = "Error";
+                    os.close();
+                }  catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            //  Student student = db.getStudent(Integer.parseInt(message));
+                            tvID.setText("Error");
+                        }
+                    });
                 }
 
                 getBalance = true;
             } else {
-
                 try {
-                    String link = "http://188.166.253.236/populate.php";
-                    String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode(idNumber, "UTF-8");
+                    String link = url;
                     URL urlNew = new URL(link);
                     URLConnection conn = urlNew.openConnection();
                     conn.setDoOutput(true);
 
+                    String newBal = String.valueOf((Double.parseDouble(newBalTemp)) - Double.parseDouble(total));
+                    Uri.Builder builder = new Uri.Builder()
+                            .appendQueryParameter("id_num", idNumber)
+                            .appendQueryParameter("new_balance", newBal);
 
-                    BufferedInputStream bufferedStream = new BufferedInputStream(conn.getInputStream());
-                    InputStreamReader streamReader = new InputStreamReader(bufferedStream);
-                    BufferedReader bufferedReader = new BufferedReader(streamReader);
-                    StringBuilder sb = new StringBuilder();
-                    String line = bufferedReader.readLine();
-                    while (line != null) {
-                        sb.append(line);
-                        line = bufferedReader.readLine();
-                    }
+                    String query = builder.build().getEncodedQuery();
 
-                    JSONObject jo = new JSONObject(sb.toString());
+                    OutputStream os = conn.getOutputStream();
+                    BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                    wr.write(query);
+                    wr.flush();
 
-                    bufferedStream.close();
-                    bufferedReader.close();
+                    wr.close();
+                    os.close();
+
                 } catch (Exception e) {
 
                 }

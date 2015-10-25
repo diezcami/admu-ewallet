@@ -239,7 +239,7 @@ public class MainActivity extends ActionBarActivity {
         protected Void doInBackground(Void... voids) {
 
             //replace this with code to update the database for students later
-            Student stud1 = new Student(144107, "Legaspi, Seth Andrei L.", 1234);
+            Student stud1 = new Student(131356, "Cami", 1234);
             Student stud2 = new Student(130488, "Begonia, Basil Miguel B.", 4321);
 
             if (!db.checkExist(stud1.getID())) {
@@ -249,7 +249,7 @@ public class MainActivity extends ActionBarActivity {
                 db.addStud(stud2);
             } else { }
 
-            try {
+           /** try {
                 String link = "http://188.166.253.236/populate.php";
                 String data = URLEncoder.encode("idnum", "UTF-8") + "=" + URLEncoder.encode("stubbyChicken", "UTF-8");
                 URL urlNew = new URL(link);
@@ -281,7 +281,7 @@ public class MainActivity extends ActionBarActivity {
                 bufferedReader.close();
             } catch (Exception e) {
 
-            }
+            }**/
 
             return null;
         }
