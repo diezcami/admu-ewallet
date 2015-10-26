@@ -15,9 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
+
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,8 +42,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
+
 public class MainActivity4 extends ActionBarActivity {
-    public String url = "http://188.166.253.236/index.php/User_Controller/balance/";
+    public String url = "http://188.166.253.236/index.php/User_Controller/balance";
     public String name = "0";
 
     public boolean getBalance = false;
@@ -122,7 +129,6 @@ public class MainActivity4 extends ActionBarActivity {
      */
     private class AsyncMethod extends AsyncTask<Void, Void, Void> {
         ProgressDialog pdL = new ProgressDialog(MainActivity4.this);
-
         /**
          * This is the UI loading screen
          */
@@ -151,72 +157,57 @@ public class MainActivity4 extends ActionBarActivity {
             final Student stud = db.getStudent(Integer.parseInt(idNumber));
 
 
-            if (getBalance == false) {
-
-
-                try {
-
-
+            if (!getBalance) {
                     //String link = "https://posttestserver.com/post.php";
                     String link = url;
 
-                    URL urlNew = new URL(link);
-                    URLConnection conn = urlNew.openConnection();
-                    conn.setDoOutput(true);
+                    RequestParams params = new RequestParams();
+                    params.put("id_num", idNumber);
 
-                    Uri.Builder builder = new Uri.Builder()
-                            .appendQueryParameter("id_num", idNumber);
+                    SyncHttpClient client = new SyncHttpClient();
+                    RequestHandle requestHandle = client.get(link, params, new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        try {
+                            JSONObject jo = new JSONObject(new String(responseBody));
 
-                    final String query = builder.build().getEncodedQuery();
+                            final String balance = jo.getJSONObject("Bal").getString("balance");
+                            newBalTemp = balance;
 
-                    OutputStream os = conn.getOutputStream();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //  Student student = db.getStudent(Integer.parseInt(message));
+                                    tvID.setText(stud.getName());
+                                    tvBal.setTextSize(40);
+                                    tvBal.setText(balance);
+                                }
+                            });
 
-                    BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                    wr.write(query);
-                    wr.flush();
-
-                    InputStream is = conn.getInputStream(); //throws IOException here and jmps to catch
-                    BufferedInputStream bufferedStream = new BufferedInputStream(is);
-                    InputStreamReader inputReader = new InputStreamReader(bufferedStream);
-                    BufferedReader reader = new BufferedReader(inputReader);
-
-                    StringBuilder sb = new StringBuilder();
-                    String line = "n-";
-
-
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line);
-                        break;
+                        } catch (JSONException e) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvID.setText("Error1");
+                                }
+                            });
+                        }
                     }
-                    JSONObject jo = new JSONObject(sb.toString());
 
-                    final String balance = jo.getJSONObject("Bal").getString("balance");
-                    newBalTemp = balance;
-                    if (sb.toString() != null) {
+                    // Happens when there's an error 4xx
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        final String potato = new String(responseBody);
+                        final int status = statusCode;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
-                                //  Student student = db.getStudent(Integer.parseInt(message));
-                                tvID.setText(stud.getName());
-                                tvBal.setTextSize(40);
-                                tvBal.setText(balance);
+                                tvID.setText(String.valueOf(status) + " | " + potato);
                             }
                         });
                     }
-                    reader.close();
-                    wr.close();
-                    os.close();
-                }  catch (Exception e) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                });
 
-                            //  Student student = db.getStudent(Integer.parseInt(message));
-                            tvID.setText("Error");
-                        }
-                    });
-                }
 
                 getBalance = true;
             } else {
