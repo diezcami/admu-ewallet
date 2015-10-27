@@ -35,6 +35,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -84,17 +86,13 @@ public class MainActivity4 extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main4);
-
+        new AsyncMethod().execute();
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        new AsyncMethod().execute();
-
-
-        //setContentView(textView);
 
         return true;
     }
@@ -113,12 +111,9 @@ public class MainActivity4 extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onResume() {
-        super.onResume();
-        new AsyncMethod().execute();
-    }
     public void checkOut(View view)
     {
+        new AsyncMethod().execute();
         Intent intent = (Intent) new Intent(this, MainActivity5.class);
         startActivity(intent);
         this.finish();
@@ -157,80 +152,90 @@ public class MainActivity4 extends ActionBarActivity {
             final Student stud = db.getStudent(Integer.parseInt(idNumber));
 
 
-            if (!getBalance) {
+            if (getBalance == false) {
                     //String link = "https://posttestserver.com/post.php";
+                try {
                     String link = url;
 
                     RequestParams params = new RequestParams();
                     params.put("id_num", idNumber);
-
                     SyncHttpClient client = new SyncHttpClient();
-                    RequestHandle requestHandle = client.get(link, params, new AsyncHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        try {
-                            JSONObject jo = new JSONObject(new String(responseBody));
-
-                            final String balance = jo.getJSONObject("Bal").getString("balance");
-                            newBalTemp = balance;
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //  Student student = db.getStudent(Integer.parseInt(message));
-                                    tvID.setText(stud.getName());
-                                    tvBal.setTextSize(40);
-                                    tvBal.setText(balance);
-                                }
-                            });
-
-                        } catch (JSONException e) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tvID.setText("Error1");
-                                }
-                            });
+                    RequestHandle requestHandle = client.post(link, params, new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                           //is not called
                         }
-                    }
 
-                    // Happens when there's an error 4xx
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        final String potato = new String(responseBody);
-                        final int status = statusCode;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvID.setText(String.valueOf(status) + " | " + potato);
+                        // Happens when there's an error 4xx, and this is the thing that gets called somehow... and it works.
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                            try {
+                                final String potato = new String(responseBody);
+                                JSONObject jo = new JSONObject(potato);
+                                final String balance = jo.getString("balance");
+                                newBalTemp = balance;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tvID.setText(potato);
+                                        tvID.setText(stud.getName());
+                                        tvBal.setTextSize(40);
+                                        tvBal.setText(balance);
+                                    }
+                                });
+                            } catch (JSONException e) {
+
                             }
-                        });
-                    }
-                });
+                        }
+                    });
+                } catch (Exception e) {
 
+                }
 
                 getBalance = true;
             } else {
                 try {
-                    String link = url;
-                    URL urlNew = new URL(link);
-                    URLConnection conn = urlNew.openConnection();
-                    conn.setDoOutput(true);
+                    try {
+                        String link = url;
+                        Double dTotal = Double.parseDouble(total);
+                        Double dNewBal = Double.parseDouble(newBalTemp) - dTotal;
+                        String newBal = String.valueOf(dNewBal);
 
-                    String newBal = String.valueOf((Double.parseDouble(newBalTemp)) - Double.parseDouble(total));
-                    Uri.Builder builder = new Uri.Builder()
-                            .appendQueryParameter("id_num", idNumber)
-                            .appendQueryParameter("new_balance", newBal);
+                        RequestParams params = new RequestParams();
+                        params.put("id_num", idNumber);
+                        params.put("new_balance",dNewBal);
+                        SyncHttpClient client = new SyncHttpClient();
+                        RequestHandle requestHandle = client.post(link, params, new AsyncHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                //Is not called
+                            }
 
-                    String query = builder.build().getEncodedQuery();
+                            // Happens when there's an error 4xx, and this is the thing that gets called somehow... and it works.
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                                try {
+                                    final String potato = new String(responseBody);
+                                    JSONObject jo = new JSONObject(potato);
+                                    final String balance = jo.getString("balance");
+                                    newBalTemp = balance;
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            tvID.setText(potato);
+                                            tvID.setText(stud.getName());
+                                            tvBal.setTextSize(40);
+                                            tvBal.setText(balance);
+                                        }
+                                    });
+                                } catch (JSONException e) {
 
-                    OutputStream os = conn.getOutputStream();
-                    BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                    wr.write(query);
-                    wr.flush();
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
 
-                    wr.close();
-                    os.close();
+                    }
 
                 } catch (Exception e) {
 
