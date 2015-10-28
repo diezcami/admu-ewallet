@@ -78,23 +78,36 @@ public class MainActivity3 extends AppCompatActivity {
         Intent intent = (Intent) new Intent(this, MainActivity4.class);
         EditText etPin = (EditText) findViewById(R.id.et_pin);
         String input = etPin.getText().toString();
-        int inputInt = Integer.parseInt(input);
-
-        if(inputInt == PIN)
-        {
-            intent.putExtra(Da_number, message);
-            startActivity(intent);
-        }
-        else
+        if(input.equals(""))
         {
             Toast toast = Toast.makeText(this, "Invalid PIN", Toast.LENGTH_SHORT);
             toast.show();
         }
-        Student localstudent = db.getStudent(id);
-        int localPin = localstudent.getPIN();
-        String strlocalPin = String.valueOf(localPin);
-        //Toast toast = Toast.makeText(this, strlocalPin, Toast.LENGTH_SHORT);
-        // toast.show();
+        else {
+            int inputInt = Integer.parseInt(input);
+            Intent getIntent = getIntent();
+            String idnum = getIntent.getStringExtra("idnum");
+            String total = getIntent.getStringExtra("total");
+
+            if(inputInt == PIN)
+            {
+                intent.putExtra(Da_number, message);
+                intent.putExtra("idnum", idnum);
+                intent.putExtra("total",total);
+                startActivity(intent);
+            }
+            else
+            {
+                Toast toast = Toast.makeText(this, "Invalid PIN", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            Student localstudent = db.getStudent(id);
+            int localPin = localstudent.getPIN();
+            String strlocalPin = String.valueOf(localPin);
+            //Toast toast = Toast.makeText(this, strlocalPin, Toast.LENGTH_SHORT);
+            // toast.show();
+        }
+
 
     }
 

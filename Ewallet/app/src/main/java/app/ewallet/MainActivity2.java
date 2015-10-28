@@ -158,14 +158,9 @@ public class MainActivity2 extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onResume() {
-        super.onResume();
-        new AsyncMethod().execute();
-    }
-
     public void login(View view) {
         LocalDBhandler db = new LocalDBhandler(this);
-        Intent intent = (Intent) new Intent(this, MainActivity3.class);
+        Intent intent0 = (Intent) new Intent(this, MainActivity3.class);
         EditText ed = (EditText) findViewById(R.id.etidnumber);
         String idNumber = ed.getText().toString();
 
@@ -181,8 +176,10 @@ public class MainActivity2 extends ActionBarActivity {
         try {
             Student student = db.getStudent(idNumberint);
             if (student.getID() > 0) {
-                intent.putExtra(Da_number, idNumber);
-                startActivity(intent);
+                intent0.putExtra(Da_number, idNumber);
+                intent0.putExtra("idnum", idNumber);
+                intent0.putExtra("total", String.valueOf(total));
+                startActivity(intent0);
             } else {
                 Toast toast = Toast.makeText(this, "WRONG CREDENTIALS", Toast.LENGTH_SHORT);
                 toast.show();
@@ -205,15 +202,7 @@ public class MainActivity2 extends ActionBarActivity {
      */
 
     public void updateDatabase1(LocalDBhandler db) {
-        Student stud1 = new Student(144107, "Legaspi, Seth Andrei L.", 1234, 100);
-        Student stud2 = new Student(130488, "Begonia, Basil Miguel B.", 4321, 145);
 
-        if (!db.checkExist(stud1.getID())) {
-            db.addStud(stud1);
-        } else { }
-        if (!db.checkExist(stud2.getID())) {
-            db.addStud(stud2);
-        } else { }
     }
 
     /**

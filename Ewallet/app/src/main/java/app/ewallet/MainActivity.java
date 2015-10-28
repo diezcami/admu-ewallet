@@ -13,8 +13,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,21 +42,21 @@ public class MainActivity extends ActionBarActivity {
     String item4Price = "";
     //EditText itemEt1, itemEt2, itemEt3, itemEt4;
     //EditText qtyEt1, qtyEt2, QtyEt3, QtyEt4;
+
+    //For handling the local DB purposes
+    LocalDBhandler db = new LocalDBhandler(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
-
+        new AsyncMethod().execute();
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        //String message = intent.getStringExtra(MainActivity.Da_number);;
-
-        //  Student student = db.getStudent(Integer.parseInt(message));
-        //setContentView(textView);
         dbShop = new LocalShopHandler(this);
         updateDatabase(dbShop);
         return true;
@@ -72,6 +76,11 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * Updates the local database for items
+     * @param db
+     */
     public void updateDatabase(LocalShopHandler db) {
         Item item1 = new Item(1 , "Non-Colored Photocopy", 0.75);
         Item item2 = new Item(2 , "Colored Photocopy", 3.50);
@@ -96,6 +105,19 @@ public class MainActivity extends ActionBarActivity {
         } else { }
     }
 
+    /**
+     * Syncs the local students database with remote one upon being clicked
+     * @param view
+     */
+    public void sync(View view) {
+        new AsyncMethod().execute();
+    }
+
+    /**
+     * Sends everything to next activity so that the next activity can use it
+     * Called when Accept btn is clicked
+     * @param view
+     */
     public void onConfirmItems(View view) {
         Intent intent = new Intent(this, MainActivity2.class);
 
@@ -188,5 +210,56 @@ public class MainActivity extends ActionBarActivity {
 
         startActivity(intent);
 
+    }
+
+    /**
+     * This makes that 'loading screen' you see in mobile online games and such lol, it also does some stuff in the background, thus not
+     * 'crashing' the system
+     */
+    private class AsyncMethod extends AsyncTask<Void, Void, Void> {
+        ProgressDialog pdL = new ProgressDialog(MainActivity.this);
+
+        /**
+         * This is the UI loading screen
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pdL.setMessage("\tLoading...");
+            pdL.show();
+        }
+
+        /**
+         * These are the background tasks (ie. updating of the Database and shiz)
+         * @param voids
+         * @return
+         */
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            //replace this with code to update the database for students later
+            Student stud1 = new Student(131356, "Cami", 1234);
+            Student stud2 = new Student(130488, "Begonia, Basil Miguel B.", 4321);
+
+            if (!db.checkExist(stud1.getID())) {
+                db.addStud(stud1);
+            } else { }
+            if (!db.checkExist(stud2.getID())) {
+                db.addStud(stud2);
+            } else { }
+
+
+            return null;
+        }
+
+        /**
+         * When everything is done; this gets rid of loading screen
+         */
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            pdL.dismiss();
+        }
     }
 }
