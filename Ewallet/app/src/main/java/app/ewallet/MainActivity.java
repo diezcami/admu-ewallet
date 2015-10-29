@@ -68,9 +68,10 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
 
-        BuyTransaction bt = new BuyTransaction(1, "2095-10-27 19:23:42", 132271, 900);
+        btdb.drop();
+        BuyTransaction bt = new BuyTransaction(1, "2095-10-27 19:23:42", 132271, 1);
         btdb.addBuyTrans(bt);
-        bt = new BuyTransaction(2, "2095-10-27 01:59:42", 131365, 990);
+        bt = new BuyTransaction(2, "2095-10-27 01:59:42", 131365, 3);
         btdb.addBuyTrans(bt);
 
         new AsyncMethod().execute();
@@ -307,7 +308,6 @@ public class MainActivity extends ActionBarActivity {
                 while (btdb.checkExist(i)) {
                     BuyTransaction tempBT = btdb.getBuyTransaction(i);
                     jo = new JSONObject();
-                    jo.put("buy_transaction_id", tempBT.getTransID());
                     jo.put("buy_transaction_ts", tempBT.getTimeStamp());
                     jo.put("id_number", tempBT.getIDNum());
                     jo.put("shop_terminal_id", tempBT.getShopID());

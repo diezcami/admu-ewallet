@@ -14,7 +14,7 @@ public class LocalStockHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     //Database Name
-    private static final String DATABASE_NAME = "LocalDB_BuyTrans";
+    private static final String DATABASE_NAME = "LocalDB_EWallet";
 
     //Table name
     private static final String TABLE_STOCK = "stock";
