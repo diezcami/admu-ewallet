@@ -25,7 +25,6 @@ public class LocalDBhandler extends SQLiteOpenHelper {
     private static final String KEY_ID_NUMBER = "ID_Number"; //1st column
     private static final String KEY_NAME = "Name"; //2nd column
     private static final String KEY_PIN = "Pin"; //3rd column
-    private static final String KEY_BALANCE = "Balance"; //4th column
 
 
     /**
@@ -44,7 +43,7 @@ public class LocalDBhandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE " + "Students" + "(" +
                 KEY_ID_NUMBER + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," +
-                KEY_PIN + " INT," + KEY_BALANCE + " NUM" + ")";
+                KEY_PIN + " INT" + ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -58,6 +57,13 @@ public class LocalDBhandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STUDENTS);
         onCreate(db);
+    }
+
+    public void drop() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STUDENTS);
+        onCreate(db);
+        db.close();
     }
 
     /**
@@ -86,7 +92,7 @@ public class LocalDBhandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_STUDENTS, new String[]{KEY_ID_NUMBER, KEY_NAME,
-                        KEY_PIN, KEY_BALANCE}, KEY_ID_NUMBER + "=?",
+                        KEY_PIN}, KEY_ID_NUMBER + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();

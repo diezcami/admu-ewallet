@@ -54,7 +54,8 @@ public class MainActivity4 extends ActionBarActivity {
 
     TextView tvID;
     TextView tvBal;
-
+    TextView tvTotCost;
+    TextView resultingBalance;
     String newBalTemp = "0";
 
     //LocalStudent database handler
@@ -116,7 +117,7 @@ public class MainActivity4 extends ActionBarActivity {
         new AsyncMethod().execute();
         Intent intent = (Intent) new Intent(this, MainActivity5.class);
         startActivity(intent);
-        this.finish();
+        //this.finish();
     }
     /**
      * This makes that 'loading screen' you see in mobile online games and such lol, it also does some stuff in the background, thus not
@@ -136,6 +137,8 @@ public class MainActivity4 extends ActionBarActivity {
 
             tvID = (TextView) findViewById(R.id.tvidnumber);
             tvBal = (TextView) findViewById(R.id.tv_actualbalance);
+            tvTotCost = (TextView) findViewById(R.id.tv_cost);
+            resultingBalance = (TextView) findViewById(R.id.resulting_balance);
         }
 
         /**
@@ -158,17 +161,23 @@ public class MainActivity4 extends ActionBarActivity {
                     String link = url;
 
                     RequestParams params = new RequestParams();
-                    params.put("id_num", idNumber);
+                    params.put("id_number", idNumber);
                     SyncHttpClient client = new SyncHttpClient();
                     RequestHandle requestHandle = client.post(link, params, new AsyncHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                            //is not called
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvID.setText("onSuccess");
+                                }
+                            });
                         }
 
                         // Happens when there's an error 4xx, and this is the thing that gets called somehow... and it works.
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        public void onFailure(int statusCode, Header[] headers, final byte[] responseBody, Throwable error) {
                             try {
                                 final String potato = new String(responseBody);
                                 JSONObject jo = new JSONObject(potato);
@@ -179,17 +188,30 @@ public class MainActivity4 extends ActionBarActivity {
                                     public void run() {
                                         tvID.setText(potato);
                                         tvID.setText(stud.getName());
-                                        tvBal.setTextSize(40);
+                                        //tvBal.setTextSize(40);
                                         tvBal.setText(balance);
+                                        tvTotCost.setText(String.valueOf(total));
+                                        Double dNewBal = Double.parseDouble(newBalTemp) - Double.parseDouble(total);
+                                        resultingBalance.setText(String.valueOf(dNewBal));
                                     }
                                 });
                             } catch (JSONException e) {
-
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tvID.setText(new String(responseBody));
+                                    }
+                                });
                             }
                         }
                     });
                 } catch (Exception e) {
-
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvID.setText("ERROR");
+                        }
+                    });
                 }
 
                 getBalance = true;
@@ -202,7 +224,7 @@ public class MainActivity4 extends ActionBarActivity {
                         String newBal = String.valueOf(dNewBal);
 
                         RequestParams params = new RequestParams();
-                        params.put("id_num", idNumber);
+                        params.put("id_number", idNumber);
                         params.put("new_balance",dNewBal);
                         SyncHttpClient client = new SyncHttpClient();
                         RequestHandle requestHandle = client.post(link, params, new AsyncHttpResponseHandler() {
@@ -224,7 +246,7 @@ public class MainActivity4 extends ActionBarActivity {
                                         public void run() {
                                             tvID.setText(potato);
                                             tvID.setText(stud.getName());
-                                            tvBal.setTextSize(40);
+                                            //tvBal.setTextSize(40);
                                             tvBal.setText(balance);
                                         }
                                     });
