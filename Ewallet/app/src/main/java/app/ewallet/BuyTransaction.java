@@ -15,8 +15,14 @@ public class BuyTransaction {
         //Empty Constructor
     }
 
-    public BuyTransaction(int transID, String timeStamp, int idNum, int terminalID) {
-        this._transaction_id = transID;
+    public BuyTransaction(String timeStamp, int idNum, int terminalID) {
+        this._timeStamp = timeStamp;
+        this._id_number = idNum;
+        this._shop_terminal_id = terminalID;
+    }
+
+    public BuyTransaction(int id, String timeStamp, int idNum, int terminalID) {
+        this._transaction_id = id;
         this._timeStamp = timeStamp;
         this._id_number = idNum;
         this._shop_terminal_id = terminalID;

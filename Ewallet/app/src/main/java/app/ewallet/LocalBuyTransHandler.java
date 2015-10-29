@@ -23,7 +23,7 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
     //Students column names
     private static final String KEY_ID_TRANSACTION = "Buy_Transaction_ID"; //1st column
     private static final String KEY_TS_TRANSACTION = "buy_transaction_TS";
-    private static final String KEY_ID_NUMBER = "ID_Number";
+    private static final String KEY_ID_NUMBER = "id_number";
     private static final String KEY_ID_SHOPTERMINAL = "shop_terminal_id";
 
     public LocalBuyTransHandler(Context context) {
@@ -102,5 +102,15 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
         onCreate(db);
         db.close();
+    }
+
+    public int getLargestPrimKey() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_BUY, new String[]{"MAX(" + KEY_ID_TRANSACTION + ")"}, null, null, null, null, null);
+        if (cursor.getCount() > 0) {
+            return cursor.getColumnIndex("Buy_Transaction_ID");
+        } else {
+            return 0;
+        }
     }
 }

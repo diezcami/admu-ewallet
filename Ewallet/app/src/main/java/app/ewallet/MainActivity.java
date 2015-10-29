@@ -34,7 +34,10 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
@@ -68,13 +71,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
 
-        btdb.drop();
-        BuyTransaction bt = new BuyTransaction(1, "2095-10-27 19:23:42", 132271, 1);
-        btdb.addBuyTrans(bt);
-        bt = new BuyTransaction(2, "2095-10-27 01:59:42", 131365, 3);
-        btdb.addBuyTrans(bt);
-
         new AsyncMethod().execute();
+
 
     }
 
@@ -283,7 +281,7 @@ public class MainActivity extends ActionBarActivity {
                             JSONArray ja = new JSONArray(new String(responseBody));
                             for (int i = 0; i < ja.length(); i++) {
                                 JSONObject jo = ja.getJSONObject(i);
-                                Student stud = new Student(Integer.parseInt(jo.getString("ID_Number")), jo.getString("last_name") + "," + jo.getString("first_name"), Integer.parseInt(jo.getString("pin")));
+                                Student stud = new Student(Integer.parseInt(jo.getString("id_number")), jo.getString("last_name") + "," + jo.getString("first_name"), Integer.parseInt(jo.getString("pin")));
                                 if (!db.checkExist(stud.getID())) {
                                     db.addStud(stud);
                                 }
@@ -293,17 +291,15 @@ public class MainActivity extends ActionBarActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    EditText et = (EditText) findViewById(R.id.qty_editText3);
-                                    //et.setText((new String(responseBody)));
                                 }
                             });
                         }
                     }
                 });
+
                 final JSONArray ja = new JSONArray();
                 JSONObject jo;
                 int i = 1;
-
             try {
                 while (btdb.checkExist(i)) {
                     BuyTransaction tempBT = btdb.getBuyTransaction(i);
@@ -317,27 +313,23 @@ public class MainActivity extends ActionBarActivity {
             } catch (JSONException e) {
 
             }
-
-
                 params = new RequestParams();
                 params.put("params", ja.toString());
-
                 requestHandle = client.post(urlSync, params, new AsyncHttpResponseHandler() {
-
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         //never called
                     }
-
                     @Override
                     public void onFailure(int statusCode, Header[] headers, final byte[] responseBody, Throwable error) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 EditText et = (EditText) findViewById(R.id.qty_editText3);
-                                et.setText((new String(responseBody)));
+                             //   et.setText((new String(responseBody)));
                                 EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
-                                itemEt4.setText(ja.toString());
+                                itemEt4.setText(btdb.getLargestPrimKey());
+
                             }
                         });
                     }
