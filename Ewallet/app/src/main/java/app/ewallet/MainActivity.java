@@ -1,6 +1,7 @@
 package app.ewallet;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -12,10 +13,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -28,6 +36,9 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.ByteArrayEntity;
 
 public class MainActivity extends ActionBarActivity {
     LocalShopHandler dbShop;
@@ -43,13 +54,25 @@ public class MainActivity extends ActionBarActivity {
     //EditText itemEt1, itemEt2, itemEt3, itemEt4;
     //EditText qtyEt1, qtyEt2, QtyEt3, QtyEt4;
 
+    public String url = "http://188.166.253.236/index.php/User_Controller/users";
+    public String urlSync = "http://188.166.253.236/index.php/Buy_Transaction_Controller/sync";
+
+    Context context = this;
+
     //For handling the local DB purposes
     LocalDBhandler db = new LocalDBhandler(this);
+    LocalBuyTransHandler btdb = new LocalBuyTransHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
+
+        BuyTransaction bt = new BuyTransaction(1, "2095-10-27 19:23:42", 132271, 900);
+        btdb.addBuyTrans(bt);
+        bt = new BuyTransaction(2, "2095-10-27 01:59:42", 131365, 990);
+        btdb.addBuyTrans(bt);
+
         new AsyncMethod().execute();
 
     }
@@ -232,22 +255,94 @@ public class MainActivity extends ActionBarActivity {
 
         /**
          * These are the background tasks (ie. updating of the Database and shiz)
+         * Note: Check if onSuccess or onFailure is working
          * @param voids
          * @return
          */
         @Override
         protected Void doInBackground(Void... voids) {
 
-            //replace this with code to update the database for students later
-            Student stud1 = new Student(131356, "Cami", 1234);
-            Student stud2 = new Student(130488, "Begonia, Basil Miguel B.", 4321);
+                String link = url;
 
-            if (!db.checkExist(stud1.getID())) {
-                db.addStud(stud1);
-            } else { }
-            if (!db.checkExist(stud2.getID())) {
-                db.addStud(stud2);
-            } else { }
+                RequestParams params = new RequestParams();
+                SyncHttpClient client = new SyncHttpClient();
+
+                RequestHandle requestHandle = client.post(link, params, new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        //is not called
+
+                    }
+
+                    // Happens when there's an error 4xx, and this is the thing that gets called somehow... and it works.
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, final byte[] responseBody, Throwable error) {
+                        try {
+                            db.drop();
+                            JSONArray ja = new JSONArray(new String(responseBody));
+                            for (int i = 0; i < ja.length(); i++) {
+                                JSONObject jo = ja.getJSONObject(i);
+                                Student stud = new Student(Integer.parseInt(jo.getString("ID_Number")), jo.getString("last_name") + "," + jo.getString("first_name"), Integer.parseInt(jo.getString("pin")));
+                                if (!db.checkExist(stud.getID())) {
+                                    db.addStud(stud);
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    EditText et = (EditText) findViewById(R.id.qty_editText3);
+                                    //et.setText((new String(responseBody)));
+                                }
+                            });
+                        }
+                    }
+                });
+                final JSONArray ja = new JSONArray();
+                JSONObject jo;
+                int i = 1;
+
+            try {
+                while (btdb.checkExist(i)) {
+                    BuyTransaction tempBT = btdb.getBuyTransaction(i);
+                    jo = new JSONObject();
+                    jo.put("buy_transaction_id", tempBT.getTransID());
+                    jo.put("buy_transaction_ts", tempBT.getTimeStamp());
+                    jo.put("id_number", tempBT.getIDNum());
+                    jo.put("shop_terminal_id", tempBT.getShopID());
+                    i++;
+                    ja.put(jo);
+                }
+            } catch (JSONException e) {
+
+            }
+
+
+                params = new RequestParams();
+                params.put("params", ja.toString());
+
+                requestHandle = client.post(urlSync, params, new AsyncHttpResponseHandler() {
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        //never called
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, final byte[] responseBody, Throwable error) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                EditText et = (EditText) findViewById(R.id.qty_editText3);
+                                et.setText((new String(responseBody)));
+                                EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
+                                itemEt4.setText(ja.toString());
+                            }
+                        });
+                    }
+                });
+
 
 
             return null;
