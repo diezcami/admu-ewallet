@@ -40,7 +40,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -60,6 +64,9 @@ public class MainActivity4 extends ActionBarActivity {
 
     //LocalStudent database handler
     LocalDBhandler db = new LocalDBhandler(this);
+
+    //BuyTransaction database handler
+    LocalBuyTransHandler btdb = new LocalBuyTransHandler(this);
 
 
     //tv_actualbalance, tv_balance
@@ -209,7 +216,7 @@ public class MainActivity4 extends ActionBarActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tvID.setText("ERROR");
+                            tvID.setText("Dead");
                         }
                     });
                 }
@@ -258,6 +265,19 @@ public class MainActivity4 extends ActionBarActivity {
                     } catch (Exception e) {
 
                     }
+
+                    Date date = new Date();
+                    DateFormat df6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String timeStamp = df6.format(date);
+
+                 //   if (!btdb.checkExist(0)) {
+                 //       BuyTransaction bt0 = new BuyTransaction(0, timeStamp, 132271, 1);
+                 //       btdb.addBuyTrans(bt0);
+                  //  }
+
+                    BuyTransaction bt = new BuyTransaction(btdb.getLargestPrimKey() + 1, timeStamp , 132271, 1);
+                   // "2095-10-27 19:23:42"
+                    btdb.addBuyTrans(bt);
 
                 } catch (Exception e) {
 
