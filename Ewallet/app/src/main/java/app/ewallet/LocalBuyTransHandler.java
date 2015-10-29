@@ -15,7 +15,7 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     //Database Name
-    private static final String DATABASE_NAME = "LocalDB_BuyTrans";
+    private static final String DATABASE_NAME = "LocalDB_EWallet";
 
     //Table name
     private static final String TABLE_BUY = "buy_transaction";
@@ -95,5 +95,12 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
             db.close();
             return false;
         }
+    }
+
+    public void drop() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
+        onCreate(db);
+        db.close();
     }
 }
