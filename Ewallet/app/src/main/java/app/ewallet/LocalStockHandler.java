@@ -20,6 +20,7 @@ public class LocalStockHandler extends SQLiteOpenHelper {
     private static final String TABLE_STOCK = "stock";
 
     //Students column names
+    private static final String KEY_PRIM = "Primary_id";
     private static final String KEY_ID_SHOPTERMINAL = "Shop_Terminal_ID"; //1st column
     private static final String KEY_ID_ITEM = "Item_ID";
     private static final String KEY_TS_STOCK = "stock_ts";
@@ -31,7 +32,8 @@ public class LocalStockHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_STOCK + "(" +
-                KEY_ID_SHOPTERMINAL + " INTEGER PRIMARY KEY," +
+                KEY_PRIM + " INTEGER PRIMARY KEY," +
+                KEY_ID_SHOPTERMINAL + " INT," +
                 KEY_ID_ITEM+ " INT," +
                 KEY_TS_STOCK + " DATETIME" + ")";
         db.execSQL(CREATE_TABLE);
@@ -47,6 +49,7 @@ public class LocalStockHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(KEY_PRIM, stock.getPrim());
         values.put(KEY_ID_SHOPTERMINAL, stock.getShopID()); //1st col
         values.put(KEY_ID_ITEM, stock.getItemID()); //2nd col
         values.put(KEY_TS_STOCK, stock.getTimeStamp()); //3rd col
@@ -58,16 +61,17 @@ public class LocalStockHandler extends SQLiteOpenHelper {
     public Stock getStock(int id) {
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_STOCK, new String[]{KEY_ID_SHOPTERMINAL, KEY_ID_ITEM,
-                        KEY_TS_STOCK}, KEY_ID_SHOPTERMINAL + "=?",
+        Cursor cursor = db.query(TABLE_STOCK, new String[]{KEY_PRIM, KEY_ID_SHOPTERMINAL, KEY_ID_ITEM,
+                        KEY_TS_STOCK}, KEY_PRIM + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         Stock stock = new Stock();
-        stock.setShopID(Integer.parseInt(cursor.getString(0)));
-        stock.setItemID(Integer.parseInt(cursor.getString(1)));
-        stock.setTimeStamp(cursor.getString(2));
+        stock.setPrim(Integer.parseInt(cursor.getString(0)));
+        stock.setShopID(Integer.parseInt(cursor.getString(1)));
+        stock.setItemID(Integer.parseInt(cursor.getString(2)));
+        stock.setTimeStamp(cursor.getString(3));
 
         db.close();
         return stock;
@@ -90,5 +94,12 @@ public class LocalStockHandler extends SQLiteOpenHelper {
             db.close();
             return false;
         }
+    }
+
+    public void drop() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STOCK);
+        onCreate(db);
+        db.close();
     }
 }

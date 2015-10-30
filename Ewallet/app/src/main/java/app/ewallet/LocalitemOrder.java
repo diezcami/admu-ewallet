@@ -93,5 +93,12 @@ public class LocalitemOrder extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void drop() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM_ORDER);
+        onCreate(db);
+        db.close();
+    }
+
 
 }

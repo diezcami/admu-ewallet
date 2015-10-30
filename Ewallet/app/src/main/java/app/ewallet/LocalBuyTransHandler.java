@@ -3,6 +3,7 @@ package app.ewallet;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -42,8 +43,8 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
-        onCreate(db);
+      //  db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
+      //  onCreate(db);
     }
 
     public void addBuyTrans(BuyTransaction bt) {
@@ -106,8 +107,15 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
 
     public int getLargestPrimKey() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(TABLE_BUY, new String[]{"MAX(" + KEY_ID_TRANSACTION + ")"}, null, null, null, null, null);
-        if (cursor.getCount() > 0) {
+        boolean potato;
+        try {
+            db.rawQuery("SELECT * FROM " + TABLE_BUY, null);
+            potato = true;
+        } catch (SQLException e) {
+            potato = false;
+        }
+        if (potato == true) {
+        Cursor cursor = db.rawQuery("SELECT MAX(" + KEY_ID_TRANSACTION + ") FROM " + TABLE_BUY , null);
             return cursor.getColumnIndex("Buy_Transaction_ID");
         } else {
             return 0;

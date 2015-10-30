@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.ByteArrayEntity;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class MainActivity extends ActionBarActivity {
     LocalShopHandler dbShop;
@@ -59,17 +61,48 @@ public class MainActivity extends ActionBarActivity {
 
     public String url = "http://188.166.253.236/index.php/User_Controller/users";
     public String urlSync = "http://188.166.253.236/index.php/Buy_Transaction_Controller/sync";
+    public String urlStock = "http://188.166.253.236/index.php/Stock_Controller/sync";
+    public String urlItemOrder = "http://188.166.253.236/index.php/Item_Order_Controller/sync";
 
     Context context = this;
 
     //For handling the local DB purposes
     LocalDBhandler db = new LocalDBhandler(this);
     LocalBuyTransHandler btdb = new LocalBuyTransHandler(this);
+    LocalStockHandler sh = new LocalStockHandler(this);
+    LocalitemOrder ioh = new LocalitemOrder(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
+
+        /**
+         * Stub constructors for hard coded inner database for the ff:
+         */
+        Date date = new Date();
+        DateFormat df6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timeStamp = df6.format(date);
+
+        btdb.drop();
+        BuyTransaction bt0 = new BuyTransaction(1, timeStamp, 131356, 001);
+        btdb.addBuyTrans(bt0);
+        bt0 = new BuyTransaction(2, timeStamp, 131356, 001);
+        btdb.addBuyTrans(bt0);
+
+        sh.drop();
+        Stock so1 = new Stock(1, 101,101,timeStamp);
+        Stock so2 = new Stock(2, 101,103, timeStamp);
+        sh.addStock(so1);
+        sh.addStock(so2);
+
+        ioh.drop();
+        ItemOrder io = new ItemOrder(65, 101, 99);
+        ItemOrder io1 = new ItemOrder(66, 103, 120);
+        ioh.addItemOrder(io);
+        ioh.addItemOrder(io1);
+
+
 
         new AsyncMethod().execute();
 
@@ -265,7 +298,6 @@ public class MainActivity extends ActionBarActivity {
 
                 RequestParams params = new RequestParams();
                 SyncHttpClient client = new SyncHttpClient();
-
                 RequestHandle requestHandle = client.post(link, params, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -297,6 +329,11 @@ public class MainActivity extends ActionBarActivity {
                     }
                 });
 
+
+            /**
+             *
+             * The one below is for syncing the Buy Transactions
+             */
                 final JSONArray ja = new JSONArray();
                 JSONObject jo;
                 int i = 1;
@@ -313,9 +350,12 @@ public class MainActivity extends ActionBarActivity {
             } catch (JSONException e) {
 
             }
+
+
                 params = new RequestParams();
                 params.put("params", ja.toString());
-                requestHandle = client.post(urlSync, params, new AsyncHttpResponseHandler() {
+
+            requestHandle = client.post(urlSync, params, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         //never called
@@ -326,16 +366,102 @@ public class MainActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 EditText et = (EditText) findViewById(R.id.qty_editText3);
-                             //   et.setText((new String(responseBody)));
+                            //    et.setText((new String(responseBody)));
                                 EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
-                                itemEt4.setText(btdb.getLargestPrimKey());
+                           //     itemEt4.setText(ja.toString());
 
                             }
                         });
                     }
                 });
 
+            /**
+             * For syncing Stocks
+             */
 
+            final JSONArray ja1 = new JSONArray();
+            jo = new JSONObject();
+            i = 1;
+            try {
+                while (btdb.checkExist(i)) {
+                    Stock stock = sh.getStock(i);
+                    jo = new JSONObject();
+                    jo.put("shop_terminal_id", stock.getShopID());
+                    jo.put("item_id", stock.getItemID());
+                    jo.put("stock_ts", stock.getTimeStamp());
+                    i++;
+                    ja1.put(jo);
+                }
+            } catch (JSONException e) {
+
+            }
+
+            params = new RequestParams();
+            params.put("params", ja1.toString());
+
+            requestHandle = client.post(urlStock, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    //never called
+                }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, final byte[] responseBody, Throwable error) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            EditText et = (EditText) findViewById(R.id.qty_editText3);
+                            et.setText((new String(responseBody)));
+                            EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
+                            itemEt4.setText(ja1.toString());
+
+                        }
+                    });
+                }
+            });
+
+            /**
+             * For syncing ItemOrders
+             */
+
+            final JSONArray ja2 = new JSONArray();
+            jo = new JSONObject();
+            i = 1;
+            try {
+                while (btdb.checkExist(i)) {
+                    Stock stock = sh.getStock(i);
+                    jo = new JSONObject();
+                    jo.put("shop_terminal_id", stock.getShopID());
+                    jo.put("item_id", stock.getItemID());
+                    jo.put("stock_ts", stock.getTimeStamp());
+                    i++;
+                    ja2.put(jo);
+                }
+            } catch (JSONException e) {
+
+            }
+
+            params = new RequestParams();
+            params.put("params", ja2.toString());
+
+            requestHandle = client.post(urlStock, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    //never called
+                }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, final byte[] responseBody, Throwable error) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            EditText et = (EditText) findViewById(R.id.qty_editText3);
+                        //    et.setText((new String(responseBody)));
+                            EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
+                         //   itemEt4.setText(ja2.toString());
+
+                        }
+                    });
+                }
+            });
 
             return null;
         }

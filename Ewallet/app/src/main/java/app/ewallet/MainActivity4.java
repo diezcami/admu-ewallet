@@ -121,6 +121,18 @@ public class MainActivity4 extends ActionBarActivity {
 
     public void checkOut(View view)
     {
+        Intent intent0 = getIntent();
+        final String idNumber = intent0.getExtras().getString("idnum");
+
+        Date date = new Date();
+        DateFormat df6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timeStamp = df6.format(date);
+
+        btdb.drop();
+
+        BuyTransaction bt = new BuyTransaction(btdb.getLargestPrimKey() + 1, timeStamp , Integer.parseInt(idNumber), 001);
+        btdb.addBuyTrans(bt);
+
         new AsyncMethod().execute();
         Intent intent = (Intent) new Intent(this, MainActivity5.class);
         startActivity(intent);
@@ -266,18 +278,7 @@ public class MainActivity4 extends ActionBarActivity {
 
                     }
 
-                    Date date = new Date();
-                    DateFormat df6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String timeStamp = df6.format(date);
 
-                 //   if (!btdb.checkExist(0)) {
-                 //       BuyTransaction bt0 = new BuyTransaction(0, timeStamp, 132271, 1);
-                 //       btdb.addBuyTrans(bt0);
-                  //  }
-
-                    BuyTransaction bt = new BuyTransaction(btdb.getLargestPrimKey() + 1, timeStamp , 132271, 1);
-                   // "2095-10-27 19:23:42"
-                    btdb.addBuyTrans(bt);
 
                 } catch (Exception e) {
 
