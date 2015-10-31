@@ -13,6 +13,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class LocalBuyTransHandler extends SQLiteOpenHelper {
 
+<<<<<<< HEAD
+=======
+    private int PRIMARY_KEY = 10;
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
     private static final int DATABASE_VERSION = 1;
 
     //Database Name
@@ -46,6 +50,17 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
       //  db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
       //  onCreate(db);
     }
+<<<<<<< HEAD
+=======
+    public int generatePrimaryKey()
+    {
+        return PRIMARY_KEY++;
+    }
+    public int getPrimaryKey()
+    {
+        return PRIMARY_KEY;
+    }
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
 
     public void addBuyTrans(BuyTransaction bt) {
         SQLiteDatabase db = getWritableDatabase();

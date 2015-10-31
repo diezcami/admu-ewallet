@@ -84,12 +84,22 @@ public class MainActivity extends ActionBarActivity {
         DateFormat df6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timeStamp = df6.format(date);
 
+<<<<<<< HEAD
         btdb.drop();
         BuyTransaction bt0 = new BuyTransaction(1, timeStamp, 131356, 001);
         btdb.addBuyTrans(bt0);
         bt0 = new BuyTransaction(2, timeStamp, 131356, 001);
         btdb.addBuyTrans(bt0);
 
+=======
+        //btdb.drop();
+        //BuyTransaction bt0 = new BuyTransaction(1, timeStamp, 131356, 001);
+        //btdb.addBuyTrans(bt0);
+        //bt0 = new BuyTransaction(2, timeStamp, 131356, 001);
+        //btdb.addBuyTrans(bt0);
+
+        /*
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
         sh.drop();
         Stock so1 = new Stock(1, 101,101,timeStamp);
         Stock so2 = new Stock(2, 101,103, timeStamp);
@@ -101,7 +111,11 @@ public class MainActivity extends ActionBarActivity {
         ItemOrder io1 = new ItemOrder(66, 103, 120);
         ioh.addItemOrder(io);
         ioh.addItemOrder(io1);
+<<<<<<< HEAD
 
+=======
+*/
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
 
 
         new AsyncMethod().execute();
@@ -336,6 +350,7 @@ public class MainActivity extends ActionBarActivity {
              */
                 final JSONArray ja = new JSONArray();
                 JSONObject jo;
+<<<<<<< HEAD
                 int i = 1;
             try {
                 while (btdb.checkExist(i)) {
@@ -347,6 +362,22 @@ public class MainActivity extends ActionBarActivity {
                     i++;
                     ja.put(jo);
                 }
+=======
+                int i = 10;
+            try {
+                while (btdb.checkExist(i)) {
+                   // if(btdb.checkExist(i)) {
+                        BuyTransaction tempBT = btdb.getBuyTransaction(i);
+                        jo = new JSONObject();
+                        jo.put("buy_transaction_ts", tempBT.getTimeStamp());
+                        jo.put("id_number", tempBT.getIDNum());
+                        jo.put("shop_terminal_id", tempBT.getShopID());
+                        i++;
+                        ja.put(jo);
+                    }
+                //else {}
+               // }
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
             } catch (JSONException e) {
 
             }
@@ -366,9 +397,15 @@ public class MainActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 EditText et = (EditText) findViewById(R.id.qty_editText3);
+<<<<<<< HEAD
                             //    et.setText((new String(responseBody)));
                                 EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
                            //     itemEt4.setText(ja.toString());
+=======
+                                et.setText((new String(responseBody)));
+                                EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
+                                itemEt4.setText(ja.toString());
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
 
                             }
                         });
@@ -381,7 +418,11 @@ public class MainActivity extends ActionBarActivity {
 
             final JSONArray ja1 = new JSONArray();
             jo = new JSONObject();
+<<<<<<< HEAD
             i = 1;
+=======
+            i = 10;
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
             try {
                 while (btdb.checkExist(i)) {
                     Stock stock = sh.getStock(i);
@@ -410,9 +451,15 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void run() {
                             EditText et = (EditText) findViewById(R.id.qty_editText3);
+<<<<<<< HEAD
                             et.setText((new String(responseBody)));
                             EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
                             itemEt4.setText(ja1.toString());
+=======
+                            //et.setText((new String(responseBody)));
+                            EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
+                             //itemEt4.setText(ja1.toString());
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
 
                         }
                     });
@@ -425,7 +472,11 @@ public class MainActivity extends ActionBarActivity {
 
             final JSONArray ja2 = new JSONArray();
             jo = new JSONObject();
+<<<<<<< HEAD
             i = 1;
+=======
+            i = 10;
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
             try {
                 while (btdb.checkExist(i)) {
                     Stock stock = sh.getStock(i);
