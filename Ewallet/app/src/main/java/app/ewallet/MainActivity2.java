@@ -18,7 +18,10 @@ import org.json.JSONObject;
 
 
 public class MainActivity2 extends ActionBarActivity {
-
+    String item1String = "";
+    String item2String = "";
+    String item3String = "";
+    String item4String = "";
     public final static String Da_number = "com.mycompany.demo.MESSAGE";
     public String url = "188.166.242.63";
     LocalDBhandler db = new LocalDBhandler(this);
@@ -59,6 +62,7 @@ public class MainActivity2 extends ActionBarActivity {
             item1qty.setText(order1qty);
             item1price.setText(order1Price);
             item1total.setText(String.valueOf(order1Total));
+            item1String = incomingIntent.getStringExtra("item1");
         }
         else
         {
@@ -80,6 +84,7 @@ public class MainActivity2 extends ActionBarActivity {
             item2qty.setText(order2qty);
             item2price.setText(order2Price);
             item2total.setText(String.valueOf(order2Total));
+            item2String = incomingIntent.getStringExtra("item2");
         }
         else
         {
@@ -101,6 +106,7 @@ public class MainActivity2 extends ActionBarActivity {
             item3qty.setText(order3qty);
             item3price.setText(order3Price);
             item3total.setText(String.valueOf(order3Total));
+            item3String = incomingIntent.getStringExtra("item3");
         }
         else
         {
@@ -122,6 +128,7 @@ public class MainActivity2 extends ActionBarActivity {
             item4qty.setText(order4qty);
             item4price.setText(order4Price);
             item4total.setText(String.valueOf(order4Total));
+            item4String = incomingIntent.getStringExtra("item4");
         }
         else
         {
@@ -179,6 +186,14 @@ public class MainActivity2 extends ActionBarActivity {
                 intent0.putExtra(Da_number, idNumber);
                 intent0.putExtra("idnum", idNumber);
                 intent0.putExtra("total", String.valueOf(total));
+<<<<<<< HEAD
+=======
+                intent0.putExtra("item1", item1String);
+                intent0.putExtra("item2", item2String);
+                intent0.putExtra("item3", item3String);
+                intent0.putExtra("item4", item4String);
+
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
                 startActivity(intent0);
             } else {
                 Toast toast = Toast.makeText(this, "WRONG CREDENTIALS", Toast.LENGTH_SHORT);

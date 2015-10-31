@@ -22,6 +22,7 @@ public class MainActivity3 extends AppCompatActivity {
     String message;
     public final static String Da_number = "com.mycompany.demo.MESSAGE";
     public String url = "188.166.242.63";
+    String item1,item2,item3,item4;
     int PIN, id;
     Student currStudent;
     //boolean studentExist;
@@ -34,6 +35,10 @@ public class MainActivity3 extends AppCompatActivity {
 
         Intent intent = getIntent();
         message = intent.getStringExtra(MainActivity2.Da_number);
+        item1 = intent.getStringExtra("item1");
+        item2 = intent.getStringExtra("item2");
+        item3 = intent.getStringExtra("item3");
+        item4 = intent.getStringExtra("item4");
         id = Integer.parseInt(message);
         currStudent = db.getStudent(id);
         PIN = currStudent.getPIN();
@@ -94,6 +99,13 @@ public class MainActivity3 extends AppCompatActivity {
                 intent.putExtra(Da_number, message);
                 intent.putExtra("idnum", idnum);
                 intent.putExtra("total",total);
+<<<<<<< HEAD
+=======
+                intent.putExtra("item1",item1);
+                intent.putExtra("item2",item2);
+                intent.putExtra("item3",item3);
+                intent.putExtra("item4",item4);
+>>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
                 startActivity(intent);
             }
             else
