@@ -69,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
     //For handling the local DB purposes
     LocalDBhandler db = new LocalDBhandler(this);
     LocalBuyTransHandler btdb = new LocalBuyTransHandler(this);
-    LocalStockHandler sh = new LocalStockHandler(this);
+    LocalStockHandler stdb = new LocalStockHandler(this);
     LocalitemOrder ioh = new LocalitemOrder(this);
 
     @Override
@@ -84,24 +84,28 @@ public class MainActivity extends ActionBarActivity {
         DateFormat df6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timeStamp = df6.format(date);
 
-        btdb.drop();
-        BuyTransaction bt0 = new BuyTransaction(1, timeStamp, 131356, 001);
-        btdb.addBuyTrans(bt0);
-        bt0 = new BuyTransaction(2, timeStamp, 131356, 001);
-        btdb.addBuyTrans(bt0);
+        //btdb.drop();
+        //BuyTransaction bt0 = new BuyTransaction(1, timeStamp, 131356, 001);
+        //btdb.addBuyTrans(bt0);
+        //bt0 = new BuyTransaction(2, timeStamp, 131356, 001);
+        //btdb.addBuyTrans(bt0);
 
-        sh.drop();
-        Stock so1 = new Stock(1, 101,101,timeStamp);
-        Stock so2 = new Stock(2, 101,103, timeStamp);
-        sh.addStock(so1);
-        sh.addStock(so2);
 
+        //Stock setting
+
+        int currKey = stdb.generatePrimaryKey();
+        Stock so1 = new Stock(currKey, "001", 101,timeStamp,100);
+        stdb.addStock(so1);                                                         //For some reason, this does not get read in asyncMethod until the enxt activity
+        currKey = stdb.generatePrimaryKey();
+        Stock so2 = new Stock(currKey, "001",103, timeStamp, 99);
+        stdb.addStock(so2);
+/**
         ioh.drop();
         ItemOrder io = new ItemOrder(65, 101, 99);
         ItemOrder io1 = new ItemOrder(66, 103, 120);
         ioh.addItemOrder(io);
         ioh.addItemOrder(io1);
-
+*/
 
 
         new AsyncMethod().execute();
@@ -336,17 +340,19 @@ public class MainActivity extends ActionBarActivity {
              */
                 final JSONArray ja = new JSONArray();
                 JSONObject jo;
-                int i = 1;
+                int i = 10;
             try {
                 while (btdb.checkExist(i)) {
-                    BuyTransaction tempBT = btdb.getBuyTransaction(i);
-                    jo = new JSONObject();
-                    jo.put("buy_transaction_ts", tempBT.getTimeStamp());
+
+                        BuyTransaction tempBT = btdb.getBuyTransaction(i);
+                        jo = new JSONObject();
+                        jo.put("buy_transaction_ts", tempBT.getTimeStamp());
                     jo.put("id_number", tempBT.getIDNum());
-                    jo.put("shop_terminal_id", tempBT.getShopID());
-                    i++;
-                    ja.put(jo);
-                }
+                        jo.put("shop_terminal_id", tempBT.getShopID());
+                        i++;
+                        ja.put(jo);
+                    }
+
             } catch (JSONException e) {
 
             }
@@ -366,7 +372,7 @@ public class MainActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 EditText et = (EditText) findViewById(R.id.qty_editText3);
-                            //    et.setText((new String(responseBody)));
+                              //  et.setText((new String(responseBody)));
                                 EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
                            //     itemEt4.setText(ja.toString());
 
@@ -377,19 +383,20 @@ public class MainActivity extends ActionBarActivity {
 
             /**
              * For syncing Stocks
-             */
+            **/
 
             final JSONArray ja1 = new JSONArray();
             jo = new JSONObject();
-            i = 1;
+            int j = 10;
             try {
-                while (btdb.checkExist(i)) {
-                    Stock stock = sh.getStock(i);
+                while (btdb.checkExist(j)) {
+                    Stock stock = stdb.getStock(j);
                     jo = new JSONObject();
-                    jo.put("shop_terminal_id", stock.getShopID());
-                    jo.put("item_id", stock.getItemID());
+                    jo.put("shop_terminal_id", "00" + stock.getShopID());
+                    jo.put("item_id",  stock.getItemID());
                     jo.put("stock_ts", stock.getTimeStamp());
-                    i++;
+                    jo.put("quantity", stock.getQty());
+                    j++;
                     ja1.put(jo);
                 }
             } catch (JSONException e) {
@@ -422,10 +429,10 @@ public class MainActivity extends ActionBarActivity {
             /**
              * For syncing ItemOrders
              */
-
+/** delete this
             final JSONArray ja2 = new JSONArray();
             jo = new JSONObject();
-            i = 1;
+            i = 10;
             try {
                 while (btdb.checkExist(i)) {
                     Stock stock = sh.getStock(i);
@@ -461,7 +468,7 @@ public class MainActivity extends ActionBarActivity {
                         }
                     });
                 }
-            });
+            }); Delete this **/
 
             return null;
         }

@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class LocalBuyTransHandler extends SQLiteOpenHelper {
 
+    private int PRIMARY_KEY = 10;
     private static final int DATABASE_VERSION = 1;
 
     //Database Name
@@ -37,7 +38,7 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
                   KEY_ID_TRANSACTION + " INTEGER PRIMARY KEY," +
                   KEY_TS_TRANSACTION + " DATETIME," +
                   KEY_ID_NUMBER + " INT," +
-                  KEY_ID_SHOPTERMINAL + " INT" + ")";
+                  KEY_ID_SHOPTERMINAL + " TEXT" + ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -46,9 +47,18 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
       //  db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
       //  onCreate(db);
     }
+    public int generatePrimaryKey()
+    {
+        return PRIMARY_KEY++;
+    }
+    public int getPrimaryKey()
+    {
+        return PRIMARY_KEY;
+    }
 
     public void addBuyTrans(BuyTransaction bt) {
         SQLiteDatabase db = getWritableDatabase();
+        onCreate(db);
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID_TRANSACTION, bt.getTransID()); //1st col
@@ -73,7 +83,7 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
         transaction.setTransID(Integer.parseInt(cursor.getString(0)));
         transaction.setTimeStamp(cursor.getString(1));
         transaction.setIDNum(Integer.parseInt(cursor.getString(2)));
-        transaction.setShopID(Integer.parseInt(cursor.getString(3)));
+        transaction.setShopID(cursor.getString(3));
 
         db.close();
         return transaction;
@@ -105,20 +115,5 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int getLargestPrimKey() {
-        SQLiteDatabase db = getReadableDatabase();
-        boolean potato;
-        try {
-            db.rawQuery("SELECT * FROM " + TABLE_BUY, null);
-            potato = true;
-        } catch (SQLException e) {
-            potato = false;
-        }
-        if (potato == true) {
-        Cursor cursor = db.rawQuery("SELECT MAX(" + KEY_ID_TRANSACTION + ") FROM " + TABLE_BUY , null);
-            return cursor.getColumnIndex("Buy_Transaction_ID");
-        } else {
-            return 0;
-        }
-    }
+
 }

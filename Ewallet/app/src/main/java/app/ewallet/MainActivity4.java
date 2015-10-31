@@ -53,7 +53,7 @@ import cz.msebera.android.httpclient.Header;
 public class MainActivity4 extends ActionBarActivity {
     public String url = "http://188.166.253.236/index.php/User_Controller/balance";
     public String name = "0";
-
+    String item1,item2,item3,item4;
     public boolean getBalance = false;
 
     TextView tvID;
@@ -67,6 +67,12 @@ public class MainActivity4 extends ActionBarActivity {
 
     //BuyTransaction database handler
     LocalBuyTransHandler btdb = new LocalBuyTransHandler(this);
+
+    //LocalStock Handler
+    LocalStockHandler stdb = new LocalStockHandler(this);
+
+    //Local itemOrder handler
+    LocalitemOrder iodb  = new LocalitemOrder(this);
 
 
     //tv_actualbalance, tv_balance
@@ -96,6 +102,11 @@ public class MainActivity4 extends ActionBarActivity {
         setContentView(R.layout.activity_main4);
         new AsyncMethod().execute();
 
+        Intent intent = getIntent();
+        item1 = intent.getStringExtra("item1");
+        item2 = intent.getStringExtra("item2");
+        item3 = intent.getStringExtra("item3");
+        item4 = intent.getStringExtra("item4");
     }
 
     @Override
@@ -118,9 +129,26 @@ public class MainActivity4 extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    public void exit(View view)
+    {
+
+
+       /**Commented out for now
+
+//im not sure if having multiple orders at one time will need more than one item order and stock...
+        Stock stock1 = new Stock(currPrimaryKey, 100, itemnumberhere, timeStamp);
+        //stdb is a localstock db
+        stdb.addStock(stock1);
+        Stock stock1 = new Stock(currPrimaryKey, 100, itemnumberhere, timeStamp);
+        stdb.addStock(stock2);
+        ItemOrder itemorder1 = new ItemOrder(currPrimaryKey, itemmumberhere, quantityfromAct1);
+    //    ItemOrder itemorder2...
+        **/
+    }
 
     public void checkOut(View view)
     {
+
         Intent intent0 = getIntent();
         final String idNumber = intent0.getExtras().getString("idnum");
 
@@ -128,10 +156,21 @@ public class MainActivity4 extends ActionBarActivity {
         DateFormat df6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timeStamp = df6.format(date);
 
+        //currPrimaryKey is the primarykey of the buytransaction
+        int currPrimaryKey = btdb.generatePrimaryKey();
+        BuyTransaction bt = new BuyTransaction(currPrimaryKey, timeStamp, Integer.parseInt(idNumber),"001");
         btdb.drop();
-
-        BuyTransaction bt = new BuyTransaction(btdb.getLargestPrimKey() + 1, timeStamp , Integer.parseInt(idNumber), 001);
         btdb.addBuyTrans(bt);
+
+        //Item Order edits the stocks here.
+        currPrimaryKey = iodb.generatePrimaryKey();
+      //  ItemOrder io = new ItemOrder(currPrimaryKey, )
+
+        //Stock edits current quantity of stock here, for this particular shopTerminal id
+        //Please edit this to have the needed item Quantities, and itemIDs
+        stdb.update(101, 99);
+
+
 
         new AsyncMethod().execute();
         Intent intent = (Intent) new Intent(this, MainActivity5.class);
