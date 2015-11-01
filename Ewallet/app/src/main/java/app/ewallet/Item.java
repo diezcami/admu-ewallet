@@ -9,6 +9,7 @@ public class Item {
     private int _item_ID;
     private String _name;
     private Double _cost;
+    private int _quantity;
 
     public Item() {
         //Empty constructor
@@ -20,10 +21,19 @@ public class Item {
      * @param name - Name of the item or what it is called
      * @param cost - how much the item is
      */
-    public Item(int itemID, String name, Double cost) {
+    public Item(int itemID, String name, Double cost, int qty) {
         this._item_ID = itemID;
         this._name = name;
         this._cost = cost;
+        this._quantity = qty;
+    }
+
+    public void setQty(int qty) {
+        this._quantity = qty;
+    }
+
+    public int getQty() {
+        return this._quantity;
     }
 
     /**

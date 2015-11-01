@@ -2,6 +2,7 @@ package app.ewallet;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,7 +13,6 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Seth Legaspi on 10/29/2015.
  */
 public class LocalBuyTransHandler extends SQLiteOpenHelper {
-
     private int PRIMARY_KEY = 10;
     private static final int DATABASE_VERSION = 1;
 
@@ -35,7 +35,7 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_BUY + "(" +
-                  KEY_ID_TRANSACTION + " INTEGER PRIMARY KEY," +
+                  "INTEGER PRIMARY KEY," +   //MUST MAKE BUY TRANSACTION ID AUTO INCREMENT. T.T
                   KEY_TS_TRANSACTION + " DATETIME," +
                   KEY_ID_NUMBER + " INT," +
                   KEY_ID_SHOPTERMINAL + " TEXT" + ")";
@@ -44,12 +44,16 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-      //  db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
-      //  onCreate(db);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
+        //onCreate(db);
     }
     public int generatePrimaryKey()
     {
         return PRIMARY_KEY++;
+    }
+    public void setPrimaryKey(int inputKey)
+    {
+         PRIMARY_KEY = inputKey;
     }
     public int getPrimaryKey()
     {
@@ -61,7 +65,6 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
         onCreate(db);
 
         ContentValues values = new ContentValues();
-        values.put(KEY_ID_TRANSACTION, bt.getTransID()); //1st col
         values.put(KEY_TS_TRANSACTION, bt.getTimeStamp()); //2nd col
         values.put(KEY_ID_NUMBER, bt.getIDNum()); //3rd col
         values.put(KEY_ID_SHOPTERMINAL, bt.getShopID());

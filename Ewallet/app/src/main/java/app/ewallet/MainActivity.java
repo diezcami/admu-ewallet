@@ -3,6 +3,7 @@ package app.ewallet;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -46,7 +47,9 @@ import cz.msebera.android.httpclient.entity.ByteArrayEntity;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class MainActivity extends ActionBarActivity {
-    LocalShopHandler dbShop;
+    SharedPreferences sp;
+
+
     Boolean atLeastOne = false;
     String item1Name = "";
     String item2Name = "";
@@ -67,6 +70,7 @@ public class MainActivity extends ActionBarActivity {
     Context context = this;
 
     //For handling the local DB purposes
+    LocalShopHandler  dbShop = new LocalShopHandler(this);
     LocalDBhandler db = new LocalDBhandler(this);
     LocalBuyTransHandler btdb = new LocalBuyTransHandler(this);
     LocalStockHandler stdb = new LocalStockHandler(this);
@@ -91,14 +95,47 @@ public class MainActivity extends ActionBarActivity {
         //btdb.addBuyTrans(bt0);
 
 
-        //Stock setting
+        //Setting up of the Stock syncing (We basically send a stock report to the database)
 
-        int currKey = stdb.generatePrimaryKey();
-        Stock so1 = new Stock(currKey, "001", 101,timeStamp,100);
-        stdb.addStock(so1);                                                         //For some reason, this does not get read in asyncMethod until the enxt activity
-        currKey = stdb.generatePrimaryKey();
-        Stock so2 = new Stock(currKey, "001",103, timeStamp, 99);
-        stdb.addStock(so2);
+        updateDatabase(dbShop);
+
+
+        sp = this.getSharedPreferences("myPrefs", MODE_WORLD_READABLE);
+        SharedPreferences.Editor editor = sp.edit();
+        String dbPrimaryKey = sp.getString("PRIMARYKEY", "initial");
+        if(dbPrimaryKey.equals("initial")) {
+            stdb.drop();
+            int currPrimaryKey = stdb.generatePrimaryKey();
+            int itemNo = 101;
+
+            while (dbShop.checkExist(itemNo)) {
+                String primaryKey = String.valueOf(currPrimaryKey);
+                Item item = dbShop.getItem(itemNo);
+                sp = this.getPreferences(Context.MODE_PRIVATE);
+                Stock stock1 = new Stock(currPrimaryKey, "001", item.getID(), timeStamp, item.getQty());
+                stdb.addStock(stock1);
+                currPrimaryKey += 1;
+                itemNo++;
+            }
+
+        } else {
+            stdb.drop();
+            int currPrimaryKey = Integer.parseInt(dbPrimaryKey) + 1;
+            int itemNo = 101;
+
+
+            while (dbShop.checkExist(itemNo)) {
+                String primaryKey = String.valueOf(currPrimaryKey);
+                Item item = dbShop.getItem(itemNo);
+                sp = this.getPreferences(Context.MODE_PRIVATE);
+                Stock stock1 = new Stock(currPrimaryKey, "001", item.getID(), timeStamp, item.getQty());
+                stdb.addStock(stock1);
+                currPrimaryKey += 1;
+                itemNo++;
+            }
+
+        }
+
 /**
         ioh.drop();
         ItemOrder io = new ItemOrder(65, 101, 99);
@@ -116,8 +153,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        dbShop = new LocalShopHandler(this);
-        updateDatabase(dbShop);
+
         return true;
     }
 
@@ -141,11 +177,11 @@ public class MainActivity extends ActionBarActivity {
      * @param db
      */
     public void updateDatabase(LocalShopHandler db) {
-        Item item1 = new Item(1 , "Non-Colored Photocopy", 0.75);
-        Item item2 = new Item(2 , "Colored Photocopy", 3.50);
-        Item item3 = new Item(3 , "Printing", 4.00);
-        Item item4 = new Item(4 , "Colored Printing", 7.75);
-        Item item5 = new Item(5 , "Adobo Rice", 80.00);
+        Item item1 = new Item(101 , "Non-Colored Photocopy", 0.75, 100);
+        Item item2 = new Item(102 , "Colored Photocopy", 3.50, 200);
+        Item item3 = new Item(103 , "Printing", 4.00, 300);
+        Item item4 = new Item(104 , "Colored Printing", 7.75, 400);
+        Item item5 = new Item(105 , "Adobo Rice", 80.00, 500);
 
         if (!db.checkExist(item1.getID())) {
             dbShop.addItem(item1);
@@ -213,6 +249,7 @@ public class MainActivity extends ActionBarActivity {
             item1Name = "";
             item1Price = "";
         }
+        intent.putExtra("itemid1", item1);
         intent.putExtra("item1", item1Name);
         intent.putExtra("item1Price", item1Price);
         intent.putExtra("qty1", qty1);
@@ -230,6 +267,7 @@ public class MainActivity extends ActionBarActivity {
             item2Name = "";
             item2Price = "";
         }
+        intent.putExtra("itemid2", item2);
         intent.putExtra("item2", item2Name);
         intent.putExtra("item2Price", item2Price);
         intent.putExtra("qty2", qty2);
@@ -246,6 +284,7 @@ public class MainActivity extends ActionBarActivity {
             item3Name = "";
             item3Price = "";
         }
+        intent.putExtra("itemid3", item3);
         intent.putExtra("item3", item3Name);
         intent.putExtra("item3Price", item3Price);
         intent.putExtra("qty3", qty3);
@@ -263,6 +302,7 @@ public class MainActivity extends ActionBarActivity {
             item4Name = "";
             item4Price = "";
         }
+        intent.putExtra("itemid4", item4);
         intent.putExtra("item4", item4Name);
         intent.putExtra("item4Price", item4Price);
         intent.putExtra("qty4", qty4);
@@ -372,9 +412,9 @@ public class MainActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 EditText et = (EditText) findViewById(R.id.qty_editText3);
-                              //  et.setText((new String(responseBody)));
+                                //et.setText((new String(responseBody)));
                                 EditText itemEt4 = (EditText) findViewById(R.id.item_editText4);
-                           //     itemEt4.setText(ja.toString());
+                                //itemEt4.setText(ja.toString());
 
                             }
                         });
@@ -385,11 +425,12 @@ public class MainActivity extends ActionBarActivity {
              * For syncing Stocks
             **/
 
+
             final JSONArray ja1 = new JSONArray();
             jo = new JSONObject();
             int j = 10;
             try {
-                while (btdb.checkExist(j)) {
+                while (stdb.checkExist(j)) {
                     Stock stock = stdb.getStock(j);
                     jo = new JSONObject();
                     jo.put("shop_terminal_id", "00" + stock.getShopID());

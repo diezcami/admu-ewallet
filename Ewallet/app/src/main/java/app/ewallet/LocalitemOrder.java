@@ -91,8 +91,8 @@ public class LocalitemOrder extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM_ORDER);
-        onCreate(db);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM_ORDER);
+        //onCreate(db);
     }
 
     public int generatePrimaryKey()

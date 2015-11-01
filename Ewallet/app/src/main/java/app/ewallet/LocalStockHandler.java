@@ -45,7 +45,8 @@ public class LocalStockHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_STOCK);
+        //onCreate(db);
     }
 
     public int generatePrimaryKey()
@@ -60,7 +61,7 @@ public class LocalStockHandler extends SQLiteOpenHelper {
     public void addStock(Stock stock) {
         SQLiteDatabase db = getWritableDatabase();
 
-        //onCreate(db);
+        onCreate(db);
 
         ContentValues values = new ContentValues();
         values.put(KEY_PRIM, stock.getPrim());

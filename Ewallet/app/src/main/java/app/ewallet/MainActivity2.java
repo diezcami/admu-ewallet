@@ -22,6 +22,10 @@ public class MainActivity2 extends ActionBarActivity {
     String item2String = "";
     String item3String = "";
     String item4String = "";
+    String qty1String = "";
+    String qty2String = "";
+    String qty3String = "";
+    String qty4String = "";
     public final static String Da_number = "com.mycompany.demo.MESSAGE";
     public String url = "188.166.242.63";
     LocalDBhandler db = new LocalDBhandler(this);
@@ -62,7 +66,8 @@ public class MainActivity2 extends ActionBarActivity {
             item1qty.setText(order1qty);
             item1price.setText(order1Price);
             item1total.setText(String.valueOf(order1Total));
-            item1String = incomingIntent.getStringExtra("item1");
+            item1String = incomingIntent.getStringExtra("itemid1");
+            qty1String = incomingIntent.getStringExtra("qty1");
         }
         else
         {
@@ -84,7 +89,8 @@ public class MainActivity2 extends ActionBarActivity {
             item2qty.setText(order2qty);
             item2price.setText(order2Price);
             item2total.setText(String.valueOf(order2Total));
-            item2String = incomingIntent.getStringExtra("item2");
+            item2String = incomingIntent.getStringExtra("item2id");
+            qty2String = incomingIntent.getStringExtra("qty2");
         }
         else
         {
@@ -106,7 +112,8 @@ public class MainActivity2 extends ActionBarActivity {
             item3qty.setText(order3qty);
             item3price.setText(order3Price);
             item3total.setText(String.valueOf(order3Total));
-            item3String = incomingIntent.getStringExtra("item3");
+            item3String = incomingIntent.getStringExtra("itemid3");
+            qty3String = incomingIntent.getStringExtra("qty3");
         }
         else
         {
@@ -128,7 +135,8 @@ public class MainActivity2 extends ActionBarActivity {
             item4qty.setText(order4qty);
             item4price.setText(order4Price);
             item4total.setText(String.valueOf(order4Total));
-            item4String = incomingIntent.getStringExtra("item4");
+            item4String = incomingIntent.getStringExtra("itemid4");
+            qty4String = incomingIntent.getStringExtra("qty4");
         }
         else
         {
@@ -186,11 +194,14 @@ public class MainActivity2 extends ActionBarActivity {
                 intent0.putExtra(Da_number, idNumber);
                 intent0.putExtra("idnum", idNumber);
                 intent0.putExtra("total", String.valueOf(total));
-                intent0.putExtra("item1", item1String);
-                intent0.putExtra("item2", item2String);
-                intent0.putExtra("item3", item3String);
-                intent0.putExtra("item4", item4String);
-
+                intent0.putExtra("itemid1", item1String);
+                intent0.putExtra("itemid2", item2String);
+                intent0.putExtra("itemid3", item3String);
+                intent0.putExtra("itemid4", item4String);
+                intent0.putExtra("qty1", qty1String);
+                intent0.putExtra("qty2", qty2String);
+                intent0.putExtra("qty3", qty3String);
+                intent0.putExtra("qty4", qty4String);
                 startActivity(intent0);
             } else {
                 Toast toast = Toast.makeText(this, "WRONG CREDENTIALS", Toast.LENGTH_SHORT);
