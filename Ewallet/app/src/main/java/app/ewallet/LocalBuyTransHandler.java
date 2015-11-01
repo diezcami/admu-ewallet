@@ -2,6 +2,7 @@ package app.ewallet;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,11 +13,15 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Seth Legaspi on 10/29/2015.
  */
 public class LocalBuyTransHandler extends SQLiteOpenHelper {
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
     private int PRIMARY_KEY = 10;
 >>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
+=======
+    private int PRIMARY_KEY = 10;
+>>>>>>> 725a80a90fc505b1a749fe469e4d9f41d938d181
     private static final int DATABASE_VERSION = 1;
 
     //Database Name
@@ -38,17 +43,29 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_BUY + "(" +
-                  KEY_ID_TRANSACTION + " INTEGER PRIMARY KEY," +
+                  "INTEGER PRIMARY KEY," +   //MUST MAKE BUY TRANSACTION ID AUTO INCREMENT. T.T
                   KEY_TS_TRANSACTION + " DATETIME," +
                   KEY_ID_NUMBER + " INT," +
-                  KEY_ID_SHOPTERMINAL + " INT" + ")";
+                  KEY_ID_SHOPTERMINAL + " TEXT" + ")";
         db.execSQL(CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-      //  db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
-      //  onCreate(db);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUY);
+        //onCreate(db);
+    }
+    public int generatePrimaryKey()
+    {
+        return PRIMARY_KEY++;
+    }
+    public void setPrimaryKey(int inputKey)
+    {
+         PRIMARY_KEY = inputKey;
+    }
+    public int getPrimaryKey()
+    {
+        return PRIMARY_KEY;
     }
 <<<<<<< HEAD
 =======
@@ -64,9 +81,9 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
 
     public void addBuyTrans(BuyTransaction bt) {
         SQLiteDatabase db = getWritableDatabase();
+        onCreate(db);
 
         ContentValues values = new ContentValues();
-        values.put(KEY_ID_TRANSACTION, bt.getTransID()); //1st col
         values.put(KEY_TS_TRANSACTION, bt.getTimeStamp()); //2nd col
         values.put(KEY_ID_NUMBER, bt.getIDNum()); //3rd col
         values.put(KEY_ID_SHOPTERMINAL, bt.getShopID());
@@ -88,7 +105,7 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
         transaction.setTransID(Integer.parseInt(cursor.getString(0)));
         transaction.setTimeStamp(cursor.getString(1));
         transaction.setIDNum(Integer.parseInt(cursor.getString(2)));
-        transaction.setShopID(Integer.parseInt(cursor.getString(3)));
+        transaction.setShopID(cursor.getString(3));
 
         db.close();
         return transaction;
@@ -120,20 +137,5 @@ public class LocalBuyTransHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int getLargestPrimKey() {
-        SQLiteDatabase db = getReadableDatabase();
-        boolean potato;
-        try {
-            db.rawQuery("SELECT * FROM " + TABLE_BUY, null);
-            potato = true;
-        } catch (SQLException e) {
-            potato = false;
-        }
-        if (potato == true) {
-        Cursor cursor = db.rawQuery("SELECT MAX(" + KEY_ID_TRANSACTION + ") FROM " + TABLE_BUY , null);
-            return cursor.getColumnIndex("Buy_Transaction_ID");
-        } else {
-            return 0;
-        }
-    }
+
 }

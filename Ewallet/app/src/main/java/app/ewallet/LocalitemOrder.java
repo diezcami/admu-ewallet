@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Seth Legaspi on 10/29/2015.
  */
 public class LocalitemOrder extends SQLiteOpenHelper {
+
+    private int PRIMARY_KEY = 10;
     private static final int DATABASE_VERSION = 1;
 
     //Database Name
@@ -89,8 +91,17 @@ public class LocalitemOrder extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM_ORDER);
-        onCreate(db);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM_ORDER);
+        //onCreate(db);
+    }
+
+    public int generatePrimaryKey()
+    {
+        return PRIMARY_KEY++;
+    }
+    public int getPrimaryKey()
+    {
+        return PRIMARY_KEY;
     }
 
     public void drop() {

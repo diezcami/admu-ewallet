@@ -2,7 +2,9 @@ package app.ewallet;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -51,11 +53,16 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity4 extends ActionBarActivity {
+    SharedPreferences sp;
     public String url = "http://188.166.253.236/index.php/User_Controller/balance";
     public String name = "0";
+<<<<<<< HEAD
     String item1,item2,item3,item4;
     public boolean getBalance = false;
 
+=======
+    String item1,item2,item3,item4,qty1,qty2,qty3,qty4;
+>>>>>>> 725a80a90fc505b1a749fe469e4d9f41d938d181
     public boolean getBalance = false;
 
     TextView tvID;
@@ -69,6 +76,15 @@ public class MainActivity4 extends ActionBarActivity {
 
     //BuyTransaction database handler
     LocalBuyTransHandler btdb = new LocalBuyTransHandler(this);
+
+    //LocalStock Handler
+    LocalStockHandler stdb = new LocalStockHandler(this);
+
+    //Local itemOrder handler
+    LocalitemOrder iodb  = new LocalitemOrder(this);
+
+    //What we need to update in place of stocks
+    LocalShopHandler shdb = new LocalShopHandler(this);
 
 
     //tv_actualbalance, tv_balance
@@ -99,6 +115,7 @@ public class MainActivity4 extends ActionBarActivity {
         new AsyncMethod().execute();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         Intent intent = getIntent();
         item1 = intent.getStringExtra("item1");
@@ -106,6 +123,17 @@ public class MainActivity4 extends ActionBarActivity {
         item3 = intent.getStringExtra("item3");
         item4 = intent.getStringExtra("item4");
 >>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
+=======
+        Intent intent = getIntent();
+        item1 = intent.getStringExtra("itemid1");
+        item2 = intent.getStringExtra("itemid2");
+        item3 = intent.getStringExtra("itemid3");
+        item4 = intent.getStringExtra("itemid4");
+        qty1 = intent.getStringExtra("qty1");
+        qty2 = intent.getStringExtra("qty2");
+        qty3 = intent.getStringExtra("qty3");
+        qty4 = intent.getStringExtra("qty4");
+>>>>>>> 725a80a90fc505b1a749fe469e4d9f41d938d181
     }
 
     @Override
@@ -128,6 +156,7 @@ public class MainActivity4 extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+<<<<<<< HEAD
     public void exit(View view)
     {
 
@@ -157,8 +186,11 @@ public class MainActivity4 extends ActionBarActivity {
     }
 
 >>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
+=======
+>>>>>>> 725a80a90fc505b1a749fe469e4d9f41d938d181
     public void checkOut(View view)
     {
+
         Intent intent0 = getIntent();
         final String idNumber = intent0.getExtras().getString("idnum");
 
@@ -167,17 +199,162 @@ public class MainActivity4 extends ActionBarActivity {
         String timeStamp = df6.format(date);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         btdb.drop();
 =======
 >>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
+=======
+        //check first if db is initially started with starting primary key of 10, or db already has contents
 
-        BuyTransaction bt = new BuyTransaction(btdb.getLargestPrimKey() + 1, timeStamp , Integer.parseInt(idNumber), 001);
-        btdb.addBuyTrans(bt);
+        sp = this.getSharedPreferences("myPrefs", MODE_WORLD_READABLE);
+        SharedPreferences.Editor editor = sp.edit();
+        String dbPrimaryKey = sp.getString("PRIMARYKEY", "initial");
+        if(dbPrimaryKey.equals("initial"))
+        {
+            int currPrimaryKey = btdb.generatePrimaryKey();
+            String primaryKey = String.valueOf(currPrimaryKey);
+            sp = this.getPreferences(Context.MODE_PRIVATE);
+
+            editor.putString("PRIMARYKEY", primaryKey);
+            editor.commit();
+            BuyTransaction bt = new BuyTransaction(currPrimaryKey, timeStamp, Integer.parseInt(idNumber),"001");
+            btdb.addBuyTrans(bt);
+            bt = btdb.getBuyTransaction(currPrimaryKey);
+            Log.i("PrimaryKey", String.valueOf(bt.getTransID()));
+            Log.i("Timestamp", bt.getTimeStamp());
+            Log.i("idnumber", String.valueOf(bt.getIDNum()));
+            Log.i("shopnumber", bt.getShopID());
+
+            if(!item1.equals("")) {
+                //This is the new way we update the stocks
+                int itemID = Integer.parseInt(item1);
+                Item item = shdb.getItem(itemID);
+                shdb.updateItem(item.getID(), item.getQty()-Integer.parseInt(qty1));
+                //
+
+                Stock stock1 = new Stock(currPrimaryKey, "001", itemID, timeStamp, Integer.parseInt(qty1));
+                stdb.addStock(stock1);
+                stock1 = stdb.getStock(currPrimaryKey);
+                Log.i("StockPrimaryKey", String.valueOf(stock1.getPrim()));
+                Log.i("shopid", stock1.getShopID());
+                Log.i("stockitemid", String.valueOf(stock1.getItemID()));
+                Log.i("stocktimestamp", stock1.getTimeStamp());
+                Log.i("stockqty", String.valueOf(stock1.getQty()));
+
+
+                ItemOrder itemOrder1 = new ItemOrder(currPrimaryKey, Integer.parseInt(item1), Integer.parseInt(qty1));
+                iodb.addItemOrder(itemOrder1);
+                itemOrder1 = iodb.getItemOrder(currPrimaryKey);
+                Log.i("IoPrimKey", String.valueOf(itemOrder1.getBuyTransID()));
+                Log.i("ioitemId", String.valueOf(itemOrder1.getItemID()));
+                Log.i("ioqty", String.valueOf(itemOrder1.getQty()));
+            }
+
+
+        }
+        else
+        {
+            int currPrimaryKey = Integer.parseInt(dbPrimaryKey) + 1;
+            btdb.setPrimaryKey(currPrimaryKey);
+            BuyTransaction bt = new BuyTransaction(currPrimaryKey, timeStamp, Integer.parseInt(idNumber),"001");
+            btdb.addBuyTrans(bt);
+            bt = btdb.getBuyTransaction(currPrimaryKey);
+            Log.i("PrimaryKey", String.valueOf(bt.getTransID()));
+            Log.i("Timestamp", bt.getTimeStamp());
+            Log.i("idnumber", String.valueOf(bt.getIDNum()));
+            Log.i("shopnumber", bt.getShopID());
+            Log.i("HEHE", "added to existing db");
+            String primKey = String.valueOf(btdb.getPrimaryKey());
+            editor.putString("PRIMARYKEY", primKey);
+            editor.commit();
+
+            if(!item1.equals("")) {
+                //This is the new way we update the stocks
+                int itemID = Integer.parseInt(item1);
+                Item item = shdb.getItem(itemID);
+                shdb.updateItem(item.getID(), item.getQty()-Integer.parseInt(qty1));
+                //
+
+                Stock stock1 = new Stock(currPrimaryKey, "001", Integer.parseInt(item1), timeStamp, Integer.parseInt(qty1));
+
+                stock1 = stdb.getStock(currPrimaryKey);
+                Log.i("StockPrimaryKey", String.valueOf(stock1.getPrim()));
+                Log.i("shopid", stock1.getShopID());
+                Log.i("stockitemid", String.valueOf(stock1.getItemID()));
+                Log.i("stocktimestamp", stock1.getTimeStamp());
+                Log.i("stockqty", String.valueOf(stock1.getQty()));
+/*
+                ItemOrder itemOrder1 = new ItemOrder(currPrimaryKey, Integer.parseInt(item1), Integer.parseInt(qty1));
+                iodb.addItemOrder(itemOrder1);
+                itemOrder1 = iodb.getItemOrder(currPrimaryKey);
+                Log.i("IoPrimKey", String.valueOf(itemOrder1.getBuyTransID()));
+                Log.i("ioitemId", String.valueOf(itemOrder1.getItemID()));
+                Log.i("ioqty", String.valueOf(qty1));*/
+            }
+
+        }
+
+
 
         new AsyncMethod().execute();
         Intent intent = (Intent) new Intent(this, MainActivity5.class);
         startActivity(intent);
-        //this.finish();
+    }
+
+    public void exit(View view)
+    {
+/*
+        Intent intent0 = getIntent();
+        final String idNumber = intent0.getExtras().getString("idnum");
+
+        Date date = new Date();
+        DateFormat df6 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timeStamp = df6.format(date);
+
+        //check first if db is initially started with starting primary key of 10, or db already has contents
+
+        sp = this.getSharedPreferences("myPrefs", MODE_WORLD_READABLE);
+        SharedPreferences.Editor editor = sp.edit();
+        String dbPrimaryKey = sp.getString("PRIMARYKEY", "initial");
+        if(dbPrimaryKey.equals("initial"))
+        {
+            int currPrimaryKey = btdb.generatePrimaryKey();
+            String primaryKey = String.valueOf(currPrimaryKey);
+            sp = this.getPreferences(Context.MODE_PRIVATE);
+
+            editor.putString("PRIMARYKEY", primaryKey);
+            editor.commit();
+            BuyTransaction bt = new BuyTransaction(currPrimaryKey, timeStamp, Integer.parseInt(idNumber),"001");
+            btdb.addBuyTrans(bt);
+            bt = btdb.getBuyTransaction(currPrimaryKey);
+            Log.i("PrimaryKey", String.valueOf(bt.getTransID()));
+            Log.i("Timestamp", bt.getTimeStamp());
+            Log.i("idnumber", String.valueOf(bt.getIDNum()));
+            Log.i("shopnumber", bt.getShopID());
+        }
+        else
+        {
+            int currPrimaryKey = Integer.parseInt(dbPrimaryKey) + 1;
+            btdb.setPrimaryKey(currPrimaryKey);
+            BuyTransaction bt = new BuyTransaction(currPrimaryKey, timeStamp, Integer.parseInt(idNumber),"001");
+            btdb.addBuyTrans(bt);
+            bt = btdb.getBuyTransaction(currPrimaryKey);
+            Log.i("PrimaryKey", String.valueOf(bt.getTransID()));
+            Log.i("Timestamp", bt.getTimeStamp());
+            Log.i("idnumber", String.valueOf(bt.getIDNum()));
+            Log.i("shopnumber", bt.getShopID());
+            Log.i("HEHE", "added to existing db");
+            String primKey = String.valueOf(btdb.getPrimaryKey());
+            editor.putString("PRIMARYKEY", primKey);
+            editor.commit();
+        }
+>>>>>>> 725a80a90fc505b1a749fe469e4d9f41d938d181
+
+
+        new AsyncMethod().execute();
+        Intent intent = (Intent) new Intent(this, MainActivity5.class);
+        startActivity(intent);
+        //this.finish();*/
     }
     /**
      * This makes that 'loading screen' you see in mobile online games and such lol, it also does some stuff in the background, thus not

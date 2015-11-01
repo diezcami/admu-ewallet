@@ -22,7 +22,11 @@ public class MainActivity3 extends AppCompatActivity {
     String message;
     public final static String Da_number = "com.mycompany.demo.MESSAGE";
     public String url = "188.166.242.63";
+<<<<<<< HEAD
     String item1,item2,item3,item4;
+=======
+    String item1,item2,item3,item4,qty1,qty2,qty3,qty4;
+>>>>>>> 725a80a90fc505b1a749fe469e4d9f41d938d181
     int PIN, id;
     Student currStudent;
     //boolean studentExist;
@@ -35,10 +39,21 @@ public class MainActivity3 extends AppCompatActivity {
 
         Intent intent = getIntent();
         message = intent.getStringExtra(MainActivity2.Da_number);
+<<<<<<< HEAD
         item1 = intent.getStringExtra("item1");
         item2 = intent.getStringExtra("item2");
         item3 = intent.getStringExtra("item3");
         item4 = intent.getStringExtra("item4");
+=======
+        item1 = intent.getStringExtra("itemid1");
+        item2 = intent.getStringExtra("itemid2");
+        item3 = intent.getStringExtra("itemid3");
+        item4 = intent.getStringExtra("itemid4");
+        qty1 = intent.getStringExtra("qty1");
+        qty2 = intent.getStringExtra("qty2");
+        qty3 = intent.getStringExtra("qty3");
+        qty4 = intent.getStringExtra("qty4");
+>>>>>>> 725a80a90fc505b1a749fe469e4d9f41d938d181
         id = Integer.parseInt(message);
         currStudent = db.getStudent(id);
         PIN = currStudent.getPIN();
@@ -100,12 +115,23 @@ public class MainActivity3 extends AppCompatActivity {
                 intent.putExtra("idnum", idnum);
                 intent.putExtra("total",total);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                 intent.putExtra("item1",item1);
                 intent.putExtra("item2",item2);
                 intent.putExtra("item3",item3);
                 intent.putExtra("item4",item4);
 >>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
+=======
+                intent.putExtra("itemid1",item1);
+                intent.putExtra("itemid2",item2);
+                intent.putExtra("itemid3",item3);
+                intent.putExtra("itemid4",item4);
+                intent.putExtra("qty1", qty1);
+                intent.putExtra("qty2", qty2);
+                intent.putExtra("qty3", qty3);
+                intent.putExtra("qty4", qty4);
+>>>>>>> 725a80a90fc505b1a749fe469e4d9f41d938d181
                 startActivity(intent);
             }
             else

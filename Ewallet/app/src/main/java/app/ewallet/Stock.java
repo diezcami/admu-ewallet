@@ -6,19 +6,29 @@ package app.ewallet;
 public class Stock {
 
     private int _prim;
-    private int _shop_ID;
+    private String _shop_ID;
     private int _item_ID;
     private String _timeStamp;
+    private int _qty;
 
     public Stock() {
         //empty constructor
     }
 
-    public Stock(int prim, int shopID, int itemID, String timeStamp) {
+    public Stock(int prim, String shopID, int itemID, String timeStamp, int qty) {
         this._prim = prim;
         this._shop_ID = shopID;
         this._item_ID = itemID;
         this._timeStamp = timeStamp;
+        this._qty = qty;
+    }
+
+    public void setQty(int qty) {
+        this._qty = qty;
+    }
+
+    public int getQty() {
+        return this._qty;
     }
 
     public void setPrim(int id) {
@@ -29,11 +39,11 @@ public class Stock {
         return this._prim;
     }
 
-    public void setShopID(int id) {
+    public void setShopID(String id) {
         this._shop_ID = id;
     }
 
-    public int getShopID() {
+    public String getShopID() {
         return this._shop_ID;
     }
 
