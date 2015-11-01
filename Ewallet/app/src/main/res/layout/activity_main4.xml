@@ -112,9 +112,13 @@
             android:layout_height="wrap_content"
             android:text="Exit"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             android:onClick="exit"
 >>>>>>> ffb08254eac62e21b8ba63eced46c81656a84186
+=======
+            android:onClick="exit"
+>>>>>>> 725a80a90fc505b1a749fe469e4d9f41d938d181
             android:id="@+id/exit_fr_act4"
             android:layout_gravity="center_vertical"
             android:layout_centerVertical="true"

@@ -30,6 +30,7 @@ public class LocalShopHandler extends SQLiteOpenHelper {
     private static final String KEY_ITEM_ID = "Item_ID"; //1st column
     private static final String KEY_NAME = "Name"; //2nd column
     private static final String KEY_COST = "Cost"; //3rd column
+    private static final String KEY_QTY = "Quantity"; //4th column
 
     public LocalShopHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -43,7 +44,8 @@ public class LocalShopHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_SHOP + "(" +
                 KEY_ITEM_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," +
-                KEY_COST + " NUM" + ")";
+                KEY_COST + " NUM," +
+                KEY_QTY + " INT" + ")";
 
         db.execSQL(CREATE_TABLE);
     }
@@ -71,6 +73,8 @@ public class LocalShopHandler extends SQLiteOpenHelper {
         values.put(KEY_ITEM_ID, item.getID());
         values.put(KEY_NAME, item.getName());
         values.put(KEY_COST, item.getCost());
+        values.put(KEY_QTY, item.getQty());
+
 
         db.insert(TABLE_SHOP, null, values);
         db.close();
@@ -85,7 +89,7 @@ public class LocalShopHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_SHOP, new String[]{KEY_ITEM_ID, KEY_NAME,
-                        KEY_COST}, KEY_ITEM_ID + "=?",
+                        KEY_COST, KEY_QTY}, KEY_ITEM_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -94,6 +98,7 @@ public class LocalShopHandler extends SQLiteOpenHelper {
         item.setID(Integer.parseInt(cursor.getString(0)));
         item.setName(cursor.getString(1));
         item.setCost(Double.parseDouble(cursor.getString(2)));
+        item.setQty(Integer.parseInt(cursor.getString(3)));
 
         db.close();
         return item;
@@ -123,5 +128,14 @@ public class LocalShopHandler extends SQLiteOpenHelper {
             db.close();
             return false;
         }
+    }
+
+    public void updateItem(int itemId, int newQty) {
+        SQLiteDatabase db = getWritableDatabase();
+        onCreate(db);
+
+        String query = "UPDATE " + TABLE_SHOP + " SET " + KEY_QTY + "=" + newQty + " WHERE " + KEY_ITEM_ID + "=" + itemId;
+        db.rawQuery(query, null);
+        db.close();
     }
 }
